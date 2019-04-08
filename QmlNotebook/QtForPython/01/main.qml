@@ -1,42 +1,9 @@
 import QtQuick 2.0
 import QtQuick.Window 2.0
-import QtQuick.Controls 2.0
 
 Window {
-	id: root
-
-	width: 640
-	height: 480
-	visible: true
-	title: "Hello Python World!"
-	
-	Column {
-		Flow {
-			Button {
-				text: "Give me a number!"
-				onClicked: numberGenerator.updateNumber();
-			}
-			Label {
-				id: numberLabel
-				/*text: "no number"*/
-				text: numberGenerator.number
-			}
-		}
-		Flow {
-			Slider {
-				from: 0
-				to: 99
-				value: numberGenerator.maxNumber
-				onValueChanged: numberGenerator.setMaxNumber(value)
-			}
-		}
-	}
-
-	signal reNextNumber(int number)
-	Component.onCompleted: numberGenerator.nextNumber.connect(reNextNumber)
-
-	Connections {
-		target: root
-		onReNextNumber: numberLabel.text = number
-	}
+	width: 640;
+	height: 480;
+	visible: true;
+	title: "Hello Python World";
 }
