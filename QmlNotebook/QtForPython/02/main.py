@@ -37,7 +37,7 @@ if __name__ == "__main__":
     """
     有趣的行是我们首先安装一个数字生成器的行。然后将此对象公开给
     QML使用QML引擎的rootContext的setContextProperty方法。这暴露了
-    对象，将QML作为名称numberGenerator下的全局变量。
+    对象，将名称numberGenerator作为QML下的全局变量。
     """
     number_generator = NumberGenerator()
     engine.rootContext().setContextProperty(

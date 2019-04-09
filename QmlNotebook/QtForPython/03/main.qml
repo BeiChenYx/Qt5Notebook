@@ -1,3 +1,10 @@
+/*
+ * 在QML中，我们可以绑定到numberGenerator对象的number和maxNumber属性。
+ * 在按钮的onClicked处理程序中，我们调用updateNumber方法来生成一个新的
+ * 随机数，在滑块的onValueChanged处理程序中，我们使用setMaxNumber方法.
+ * 这是因为直接通过Javascript修改属性会破坏绑定到属性。
+ * 通过显式地使用setter方法，可以避免这种情况
+*/
 import QtQuick 2.0
 import QtQuick.Window 2.0
 import QtQuick.Controls 2.0
@@ -10,23 +17,24 @@ Window {
 	visible: true;
 	title: "Hello Python World";
 
-	Flow {
-		Button {
-			text: "Give me a number!"
-			// TODO: 还不知道暴露的对象怎么传参数进去，信号怎么传参数出来
-			onClicked: numberGenerator.giveNumber();
+	Column {
+		Flow {
+			Button {
+				text: "Give me a number!"
+				onClicked: numberGenerator.updateNumber();
+			}
+			Label {
+				id: numberLabel
+				text: numberGenerator.number
+			}
 		}
-		Label {
-			id: numberLabel
-			text: "no number"
+		Flow {
+			Slider {
+				from: 0
+				to: 99
+				value: numberGenerator.maxNumber
+				onValueChanged: numberGenerator.setMaxNumber(value)
+			}
 		}
-	}
-	// 信号参数名不会从Python传播到QML，因此我们需要这样做回送信号
-	signal reNextNumber(int number)
-	Component.onCompleted: numberGenerator.nextNumber.connect(reNextNumber)
-
-	Connections {
-		target: root
-		onReNextNumber: numberLabel.text = number
 	}
 }
