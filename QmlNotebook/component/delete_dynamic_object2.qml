@@ -7,6 +7,7 @@ Rectangle {
     height: 300;
     property int count: 0;
     property Component component: null;
+    property var dynamicObjects: new Array();
 
     Text {
         id: coloredText;
@@ -28,6 +29,7 @@ Rectangle {
             colorPicker = rootItem.component.createObject(rootItem,
                  {"color": clr, "x": rootItem.count * 55, "y": 10});
             colorPicker.colorPicked.connect(rootItem.changeTextColor);
+            rootItem.dynamicObjects[rootItem.dynamicObjects.length] = colorPicker;
         }
         rootItem.count++;
     }
@@ -42,6 +44,20 @@ Rectangle {
         onClicked: {
             createColorPicker(Qt.rgba(Math.random(),
                           Math.random(), Math.random(), 1));
+        }
+    }
+
+    Button {
+        id: del;
+        text: "del";
+        anchors.left: add.right;
+        anchors.leftMargin: 4;
+        anchors.bottom: add.bottom;
+        onClicked: {
+            if(rootItem.dynamicObjects.length > 0){
+                var deleted = rootItem.dynamicObjects.splice(-1, 1);
+                deleted[0].destroy();
+            }
         }
     }
 }
