@@ -2,6 +2,7 @@ import QtQuick 2.9
 import QtQuick.Window 2.2
 import QtQuick.Controls 2.12
 import QtQuick.Controls.Styles 1.4
+import QtCharts 2.3
 
 /*
 * 自定义标题栏的框架
@@ -186,7 +187,7 @@ ApplicationWindow {
 
     // 标题栏
     Rectangle {
-        id: title;
+        id: titlebar;
         width: parent.width;
         height: 20;
         property bool isMax: false;
@@ -261,10 +262,18 @@ ApplicationWindow {
         id: navBtnComponent;
         Button {
             id: navBtn;
-            width: 160;
+            width: 60;
             height: 60;
             text: qsTr("");
             font.pixelSize: 16;
+            signal switchPage(string btnName) ;
+
+            MouseArea {
+                anchors.fill: parent;
+                onClicked: {
+                    navBtn.switchPage(navBtn.text);
+                }
+            }
 
             background: Rectangle {
                 implicitWidth: parent.width;
@@ -276,30 +285,89 @@ ApplicationWindow {
 
     Rectangle {
         id: nav;
-        width: 160;
+        width: 60;
         height: parent.height;
+        anchors.left: parent.left;
+        anchors.top: parent.top;
         color: "#F2F2F1";
-//        color: "gray";
 
-        Label {
-            id: logo;
-            width: parent.width;
+        Rectangle{
+            id: titleName;
+            width: 60;
             height: 60;
-            anchors.top: parent.top;
-            anchors.topMargin: 5;
-            text: "LOGO";
-            color: "blue";
-        }
-
-        Loader {
-            id: home;
-            anchors.left: parent.left;
-            anchors.top: logo.bottom;
-            sourceComponent: navBtnComponent;
-            onLoaded: {
-                item.text = "展示";
+            Text {
+                anchors.centerIn: parent;
+                text: qsTr("Chart");
+                font.pixelSize: 16;
+                font.bold: true;
             }
         }
 
+        Loader {
+            id: pies;
+            anchors.left: parent.left;
+            anchors.top: titleName.bottom;
+            anchors.topMargin: 5;
+            sourceComponent: navBtnComponent;
+            onLoaded: {
+                item.text = "Pie";
+            }
+        }
+        Loader {
+            id: line;
+            anchors.left: parent.left;
+            anchors.top: pies.bottom;
+            sourceComponent: navBtnComponent;
+            onLoaded: {
+                item.text = "Line";
+            }
+        }
     }
+
+    // 内容区
+    StackView {
+        id: stack
+        initialItem: pieCH;
+        anchors.left: nav.right;
+        anchors.top: titlebar.bottom;
+        anchors.bottom: root.bottom;
+        anchors.right: root.right;
+    }
+
+    Loader {
+        id: pieCH;
+        width: 640;
+        height: 480;
+        anchors.left: nav.right;
+        anchors.top: titlebar.bottom;
+        anchors.bottomMargin: 4;
+        source: "./PieChart.qml";
+    }
+    Loader {
+        id: lineCH;
+        width: 640;
+        height: 480;
+        anchors.left: nav.right;
+        anchors.top: titlebar.bottom;
+        anchors.bottomMargin: 4;
+        source: "./LineChart.qml";
+    }
+
+    Connections {
+        target: line.item;
+        onSwitchPage: {
+            console.log(btnName);
+            stack.push(lineCH)
+            console.log(stack.depth);
+        }
+    }
+    Connections {
+        target: pies.item;
+        onSwitchPage: {
+            console.log(btnName);
+            stack.push(pieCH)
+            console.log(stack.depth);
+        }
+    }
+
 }
