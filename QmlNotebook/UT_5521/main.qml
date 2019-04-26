@@ -256,37 +256,48 @@ ApplicationWindow {
 
     }
     // 侧边导航栏
+    Component {
+        // 侧边导航栏按钮组件
+        id: navBtnComponent;
+        Button {
+            id: navBtn;
+            width: 160;
+            height: 60;
+            text: qsTr("");
+            font.pixelSize: 16;
+
+            background: Rectangle {
+                implicitWidth: parent.width;
+                implicitHeight: 60;
+                color: (navBtn.hovered | navBtn.pressed) ? "#F1E7E6" : "#F2F2F1";
+            }
+        }
+    }
+
     Rectangle {
+        id: nav;
         width: 160;
         height: parent.height;
-        color: "gray";
+        color: "#F2F2F1";
+//        color: "gray";
 
-        Flow {
+        Label {
+            id: logo;
             width: parent.width;
-            height: parent.height;
-            flow: Flow.TopToBottom;
-            Label {
-                width: parent.width;
-                height: 60;
-                text: "LOGO";
-                color: "blue";
-            }
+            height: 60;
+            anchors.top: parent.top;
+            anchors.topMargin: 5;
+            text: "LOGO";
+            color: "blue";
+        }
 
-            Button {
-                width: parent.width;
-                height: 60;
-                id: home;
-                text: qsTr("主页")
-
-                background: Rectangle {
-                    implicitWidth: parent.width;
-                    implicitHeight: 60;
-                    opacity: enabled ? 1 : 0.3;
-                    border.color: home.down ? "#17a81a" : "#21be2b";
-                    border.width: 1;
-                    radius: 2;
-                    color: "red";
-                }
+        Loader {
+            id: home;
+            anchors.left: parent.left;
+            anchors.top: logo.bottom;
+            sourceComponent: navBtnComponent;
+            onLoaded: {
+                item.text = "展示";
             }
         }
 
