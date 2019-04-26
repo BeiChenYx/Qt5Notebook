@@ -13,13 +13,16 @@ ApplicationWindow {
     height: 480;
     flags: Qt.Window | Qt.FramelessWindowHint;
 
-    function updatePosition(mouseOld, mouseNew){
-        var deltaX = (mouseNew.x - mouseOld.x);
-        var deltaY = (mouseNew.y - mouseOld.y);
-        root.setX(root.x + deltaX);
-        root.setY(root.y + deltaY);
-        root.width = root.width + deltaX;
-        root.height = root.height + deltaY;
+    function handleMaxButton(){
+        if(title.isMax){
+            root.visibility =  Window.Windowed;
+            title.isMax = false;
+            btnImage.source = "./max.png";
+        }else{
+            root.visibility =  Window.Maximized;
+            title.isMax = true;
+            btnImage.source = "./reset.png";
+        }
     }
 
     MouseArea {
@@ -45,6 +48,12 @@ ApplicationWindow {
         property int mouseState: 0
         // 最小宽高
         property int minWidthHeight:30;
+
+        onDoubleClicked: {
+            handleMaxButton();
+            isClicked = false;
+            mouse.accepted = true;
+        }
 
         onPressed: {
             focus = true;
@@ -177,20 +186,74 @@ ApplicationWindow {
 
     // 标题栏
     Rectangle {
+        id: title;
         width: parent.width;
-        height: 30;
-//        color: "#00A600";
+        height: 20;
+        property bool isMax: false;
 
         Button {
-            id: close;
-            height: parent.height;
-            width: 40;
+            id: closeButton;
+            width: 20; height: 20;
             anchors.right: parent.right;
+            anchors.rightMargin: 8;
             anchors.top: parent.top;
-            style: ButtonStyle {
-                radius: 4;
+            anchors.topMargin: 2;
+            ToolTip.text: "关闭";
+            ToolTip.visible: hovered;
+
+            onClicked: {
+                // TODO: 增加相应的退出处理
+                Qt.quit();
+            }
+
+            background: Rectangle {
+                implicitWidth: 20; implicitHeight: 20;
+                color: (closeButton.hovered | closeButton.pressed) ? "red" : "white";
+                BorderImage {
+                    anchors.fill: parent;
+                    source: (closeButton.hovered | closeButton.pressed) ? "./close_hover.png" : "./close.png";
+                }
             }
         }
+        Button {
+            id: maxButton;
+            width: 20; height: 20;
+            anchors.right: closeButton.left;
+            anchors.rightMargin: 8;
+            anchors.top: closeButton.top;
+            anchors.topMargin: 2;
+            ToolTip.text: parent.isMax ? "最大化" : "还原";
+            ToolTip.visible: hovered;
+            Image {
+                id: btnImage;
+                fillMode: Image.Stretch;
+                width: parent.width; height: parent.height;
+                source: "./max.png";
+            }
+
+            onClicked: {
+                handleMaxButton();
+            }
+        }
+        Button {
+            id: minButton;
+            width: 20; height: 20;
+            anchors.right: maxButton.left;
+            anchors.rightMargin: 8;
+            anchors.top: closeButton.top;
+            anchors.topMargin: 2;
+            ToolTip.text: "最小化";
+            ToolTip.visible: hovered;
+            background: Rectangle {
+                implicitWidth: 20; implicitHeight: 20;
+                BorderImage {
+                    anchors.fill: parent;
+                    source: "./min.png";
+                }
+            }
+            onClicked: root.visibility =  Window.Minimized;
+        }
+
     }
     // 侧边导航栏
     Rectangle {
@@ -212,14 +275,14 @@ ApplicationWindow {
             Button {
                 width: parent.width;
                 height: 60;
-                id: control
+                id: home;
                 text: qsTr("主页")
 
                 background: Rectangle {
                     implicitWidth: parent.width;
                     implicitHeight: 60;
                     opacity: enabled ? 1 : 0.3;
-                    border.color: control.down ? "#17a81a" : "#21be2b";
+                    border.color: home.down ? "#17a81a" : "#21be2b";
                     border.width: 1;
                     radius: 2;
                     color: "red";
