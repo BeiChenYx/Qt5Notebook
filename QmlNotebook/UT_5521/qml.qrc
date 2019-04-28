@@ -3,5 +3,7 @@
         <file>main.qml</file>
         <file>PieChart.qml</file>
         <file>LineChart.qml</file>
+        <file>NavSwipe.qml</file>
+        <file>TempHum.qml</file>
     </qresource>
 </RCC>

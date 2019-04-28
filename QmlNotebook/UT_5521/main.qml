@@ -15,13 +15,13 @@ ApplicationWindow {
     flags: Qt.Window | Qt.FramelessWindowHint;
 
     function handleMaxButton(){
-        if(title.isMax){
+        if(titlebar.isMax){
             root.visibility =  Window.Windowed;
-            title.isMax = false;
+            titlebar.isMax = false;
             btnImage.source = "./max.png";
         }else{
             root.visibility =  Window.Maximized;
-            title.isMax = true;
+            titlebar.isMax = true;
             btnImage.source = "./reset.png";
         }
     }
@@ -257,32 +257,6 @@ ApplicationWindow {
 
     }
     // 侧边导航栏
-    Component {
-        // 侧边导航栏按钮组件
-        id: navBtnComponent;
-        Button {
-            id: navBtn;
-            width: 60;
-            height: 60;
-            text: qsTr("");
-            font.pixelSize: 16;
-            signal switchPage(string btnName) ;
-
-            MouseArea {
-                anchors.fill: parent;
-                onClicked: {
-                    navBtn.switchPage(navBtn.text);
-                }
-            }
-
-            background: Rectangle {
-                implicitWidth: parent.width;
-                implicitHeight: 60;
-                color: (navBtn.hovered | navBtn.pressed) ? "#F1E7E6" : "#F2F2F1";
-            }
-        }
-    }
-
     Rectangle {
         id: nav;
         width: 60;
@@ -303,71 +277,50 @@ ApplicationWindow {
             }
         }
 
-        Loader {
-            id: pies;
-            anchors.left: parent.left;
+        Button {
+            width: 60;
+            height: 60;
             anchors.top: titleName.bottom;
-            anchors.topMargin: 5;
-            sourceComponent: navBtnComponent;
-            onLoaded: {
-                item.text = "Pie";
+            anchors.left: root.left;
+            id: pieBtn;
+            text: "Pie";
+            onClicked: {
+                swipe.currentIndex = 0;
             }
         }
-        Loader {
-            id: line;
-            anchors.left: parent.left;
-            anchors.top: pies.bottom;
-            sourceComponent: navBtnComponent;
-            onLoaded: {
-                item.text = "Line";
+        Button {
+            width: 60;
+            height: 60;
+            anchors.top: pieBtn.bottom;
+            anchors.left: root.left;
+            id: lineBtn;
+            text: "Line";
+            onClicked: {
+                swipe.currentIndex = 1;
             }
         }
+
     }
 
     // 内容区
-    StackView {
-        id: stack
-        initialItem: pieCH;
-        anchors.left: nav.right;
-        anchors.top: titlebar.bottom;
-        anchors.bottom: root.bottom;
-        anchors.right: root.right;
-    }
+    Rectangle {
+        anchors.fill: parent;
+        color: "transparent";
 
-    Loader {
-        id: pieCH;
-        width: 640;
-        height: 480;
-        anchors.left: nav.right;
-        anchors.top: titlebar.bottom;
-        anchors.bottomMargin: 4;
-        source: "./PieChart.qml";
-    }
-    Loader {
-        id: lineCH;
-        width: 640;
-        height: 480;
-        anchors.left: nav.right;
-        anchors.top: titlebar.bottom;
-        anchors.bottomMargin: 4;
-        source: "./LineChart.qml";
-    }
+        SwipeView {
+            id: swipe;
+            anchors.fill: parent;
+            anchors.leftMargin: nav.width;
+            anchors.topMargin: titlebar.height;
+            clip: false;
 
-    Connections {
-        target: line.item;
-        onSwitchPage: {
-            console.log(btnName);
-            stack.push(lineCH)
-            console.log(stack.depth);
+            currentIndex: 0;
+            PieChart {
+                id: pieCh;
+            }
+            LineChart {
+                id: lineCh;
+            }
         }
     }
-    Connections {
-        target: pies.item;
-        onSwitchPage: {
-            console.log(btnName);
-            stack.push(pieCH)
-            console.log(stack.depth);
-        }
-    }
-
 }
