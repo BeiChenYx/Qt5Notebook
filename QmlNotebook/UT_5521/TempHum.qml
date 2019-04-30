@@ -7,16 +7,12 @@ import QtQuick.Layouts 1.12
 ApplicationWindow {
     id: root;
     visible: true;
-    // width / height  = 16 / 9, 因为图片都是这个缩放比例
-    // 控件的大小比例和控件位置距离比例都是根据效果图，缩放到 960*540
-    // 的图片来测量缩放的;
-    height: 540;
-    width: 960;
-    // 定义参考的 16/9 的图片宽高，用来计算缩放比例的参考值
+    height: rootGL.implicitHeight;
+    width: rootGL.implicitWidth;
     property int _width: 960;
     property int _height: 540;
-    property var hRatio: width / _width;
-    property var vRatio: height / _height;
+    property double hRatio: width / _width;
+    property double vRatio: height / _height;
     // 去掉标题栏，自定义标题栏
     flags: Qt.Window | Qt.FramelessWindowHint;
 
@@ -82,42 +78,43 @@ ApplicationWindow {
                     root.setY(root.y + delta.y)
                     break;
                 case 1:
-                    root.width = root.width - delta.x;
-                    root.height = root.height - delta.y
+                    // TODO: 缩放功能目前有bug,先不上线
+//                    root.width = root.width - delta.x;
+//                    root.height = root.height - delta.y
                     root.setX(root.x + delta.x)
                     root.setY(root.y + delta.y)
                     break;
                 case 2:
-                    root.width = root.width - delta.x;
+//                    root.width = root.width - delta.x;
                     root.setX(root.x + delta.x)
                     break;
                 case 3:
-                    root.width = root.width - delta.x;
-                    root.height = root.height + delta.y;
+//                    root.width = root.width - delta.x;
+//                    root.height = root.height + delta.y;
                     root.setX(root.x + delta.x)
                     clickPos = Qt.point(mouse.x, mouse.y)
                     break;
                 case 4:
-                    root.height = root.height - delta.y
+//                    root.height = root.height - delta.y
                     root.setY(root.y + delta.y)
                     break;
                 case 6:
-                    root.height = root.height + delta.y;
+//                    root.height = root.height + delta.y;
                     clickPos = Qt.point(mouse.x, mouse.y)
                     break;
                 case 7:
-                    root.width = root.width + delta.x;
-                    root.height = root.height - delta.y;
+//                    root.width = root.width + delta.x;
+//                    root.height = root.height - delta.y;
                     root.setY(root.y + delta.y)
                     clickPos = Qt.point(mouse.x, mouse.y)
                     break;
                 case 8:
-                    root.width = root.width + delta.x;
+//                    root.width = root.width + delta.x;
                     clickPos = Qt.point(mouse.x, mouse.y)
                     break;
                 case 9:
-                    root.width = root.width + delta.x;
-                    root.height = root.height + delta.y;
+//                    root.width = root.width + delta.x;
+//                    root.height = root.height + delta.y;
                     clickPos = Qt.point(mouse.x, mouse.y)
                     break;
                 default:
@@ -132,6 +129,7 @@ ApplicationWindow {
                 }
 
             }
+        /* TODO: 鼠标改变窗口大小的功能实现有bug, 在右下角经常无法触发鼠标，因此屏蔽这个功能
             else
             {
                 // 没有按左键，只需要改变鼠标形状
@@ -153,7 +151,7 @@ ApplicationWindow {
                         rootMouseArea.cursorShape = Qt.SizeBDiagCursor;
                     }
                 }
-                else if(mouseX > step && mouseX < root.width - step){
+                else if(mouseX > step && mouseX <= root.width - step){
                     // 九宫格中间第二列的三行
                     if(mouseY < step && mouseY > 0){
                         mouseState = 4;
@@ -168,320 +166,315 @@ ApplicationWindow {
                         rootMouseArea.cursorShape = Qt.SizeVerCursor;
                     }
                 }
-                else if(mouseX >= root.width - step && mouseX <= root.width){
-                    // 九宫格中间第三列的三行, 第三列第三行的运行结果鼠标显示切换不明显，故范围扩大到 2 * step
+                else if(mouseX > root.width - step && mouseX <= root.width){
+                    // 九宫格中间第三列的三行
                     if(mouseY <= step && mouseY > 0){
                         mouseState = 7;
                         rootMouseArea.cursorShape = Qt.SizeBDiagCursor;
                     }
-                    else if(mouseY > step && mouseY < root.height - 2 * step){
+                    else if(mouseY > step && mouseY < root.height - step){
                         mouseState = 8;
                         rootMouseArea.cursorShape = Qt.SizeHorCursor;
                     }
-                    else if(mouseY >= root.height - 2 * step && mouseY <= root.height){
+                    else if((mouseY >= (root.height - step)) && mouseY <= root.height){
                         mouseState = 9;
                         rootMouseArea.cursorShape = Qt.SizeFDiagCursor;
                     }
                 }
             }
+        */
             mouse.accepted = true;
         }
     }
 
     GridLayout {
-        // 栅格布局管理器来管理标题栏 和 内容区域
-        // 第一行为标题栏, 占两列
-        // 第二行为 左导航栏 和 内容区域
         id: rootGL;
-        rows: 2
-        columns: 2;
         anchors.fill: parent;
+        rows: 2; columns: 2;
         rowSpacing: 0; columnSpacing: 0;
 
-        // 标题栏
-        GridLayout {
-            id: titleBarLY;
-            Layout.columnSpan: 2;
-            rows: 1; columns: 1;
-            rowSpacing: 0; columnSpacing: 0;
-
-            // 标题名称背景图, LOGO，最小化，最大化，关闭按钮
-            Rectangle {
-                id: titleBar;
-                width: root.width;
-                height: 70 * root.vRatio;
-                anchors.top: root.top;
-                anchors.left: root.left;
-                color: "transparent";
-
-                // 背景图
-                Image {
-                    id: titleImg;
-                    // 30 是量 root._width,root._height 的图片中背景图的
-                    // 左边加右边的距离,得出宽度，同理得出相对高度，以下都是
-                    // 类似计算方法;
-                    width: root.width - 30 * root.hRatio;
-                    height: 55 * root.vRatio;
-                    source: "./image/title.png";
-                    fillMode: Image.Stretch;
-                    anchors.left: parent.left;
-                    anchors.leftMargin: 15 * root.hRatio;
-                    anchors.top: root.top;
-                    anchors.topMargin: 20 * root.hRatio;
-                    z: 0;
-                }
-                // LOGO
-                Image {
-                    id: logo;
-                    width: root.width * (568 / 1920);
-                    height: logo.width * (48 / 568);
-                    source: "./image/logo.png";
-                    fillMode: Image.Stretch;
-                    anchors.left: parent.left;
-                    anchors.leftMargin: 27 * root.hRatio;
-                    anchors.top: titleImg.top;
-                    anchors.topMargin: 32 * ( root.height / root._height);
-                    z: 1;
-                }
-
-                Rectangle {
-                    id: titlebar;
-                    width: 76;
-                    height: 20;
-                    anchors.right: parent.right;
-                    anchors.top: titleImg.top;
-                    anchors.topMargin: 20 * root.vRatio;
-                    color: "transparent";
-                    property bool isMax: false;
-
-                    // 最小化, 最大化, 关闭按钮
-                    Button {
-                        id: closeButton;
-                        width: 22 * root.hRatio; height:22 * root.vRatio;
-                        anchors.right: parent.right;
-                        anchors.rightMargin: 23 * root.hRatio;
-                        anchors.top: parent.top;
-                        ToolTip.text: "关闭";
-                        ToolTip.visible: hovered;
-
-                        onClicked: {
-                            // TODO: 增加相应的退出处理
-                            Qt.quit();
-                        }
-
-                        background: Rectangle {
-                            color: (closeButton.hovered | closeButton.pressed) ? "red" : "transparent";
-                            radius: width / 2;
-                            BorderImage {
-                                anchors.fill: parent;
-                                source: "./image/close.png";
-                            }
-                        }
-                    }
-                    Button {
-                        id: maxButton;
-                        width: 22 * root.hRatio; height: 22 * root.vRatio;
-                        anchors.right: closeButton.left;
-                        anchors.rightMargin: 8 * root.hRatio;
-                        anchors.top: closeButton.top;
-                        ToolTip.text: parent.isMax ? "还原" : "最大化";
-                        ToolTip.visible: hovered;
-                        Image {
-                            id: btnImage;
-                            fillMode: Image.Stretch;
-                            width: parent.width; height: parent.height;
-                            source: "./image/max.png";
-                        }
-                        background: Rectangle{
-                            color: "transparent";
-                        }
-
-                        onClicked: {
-                            handleMaxButton();
-                        }
-                    }
-                    Button {
-                        id: minButton;
-                        width: 22 * root.hRatio; height: 22 * root.vRatio;
-                        anchors.right: maxButton.left;
-                        anchors.rightMargin: 8 * root.hRatio;
-                        anchors.top: closeButton.top;
-                        ToolTip.text: "最小化";
-                        ToolTip.visible: hovered;
-                        background: Rectangle {
-                            color: "transparent";
-                            BorderImage {
-                                anchors.fill: parent;
-                                source: "./image/min.png";
-                            }
-                        }
-                        onClicked: root.visibility =  Window.Minimized;
-                    }
-                }
-            }
-        }
-        // 内容区域
-
-        // 按钮导航栏
+        // 标题名称背景图, LOGO，最小化，最大化，关闭按钮
         Rectangle {
-            id: leftNav;
-            Layout.rowSpan: 1;
-            width: 300 * root.hRatio;
-            height: 360 * root.vRatio;
-            anchors.left: root.left;
-            anchors.top: root.top;
-            anchors.topMargin: 130 * root.vRatio;
+            id: titleBar;
+            Layout.rowSpan: 1; Layout.columnSpan: 2;
+            Layout.fillHeight: true; Layout.fillWidth: true;
+            Layout.minimumWidth: 960; Layout.maximumWidth: 1920;
+            Layout.minimumHeight: 75; Layout.maximumHeight: 145;
+            Layout.preferredWidth: 960; Layout.preferredHeight: 75;
             color: "transparent";
 
-            Button {
-                id: displaybtn;
-                // 原图是 1920 * 1080 的图，Button 是 383 * 80的大小
-                width: 383 * (root.width / 1920);
-                height: 80 * (root.height / 1080);
-                anchors.right: parent.right;
-                anchors.rightMargin: 58 * root.hRatio;
-                anchors.top: parent.top;
-                background: Rectangle {
-                    color: (displaybtn.hovered | displaybtn.pressed) ? "#42A1FA" : "transparent";
-                    radius: width / 2;
-                    BorderImage {
-                        anchors.fill: parent;
-                        source: "./image/display.png";
-                    }
-                }
-                onClicked: {
-                    Qt.quit();
-                }
-            }
-            Button {
-                id: combtn;
-                // 原图是 1920 * 1080 的图，Button 是 383 * 80的大小
-                width: 383 * (root.width / 1920);
-                height: 80 * (root.height / 1080);
-                anchors.right: parent.right;
-                anchors.rightMargin: 58 * root.hRatio;
-                anchors.top: displaybtn.bottom;
-                anchors.topMargin: 40 * root.vRatio;
-                background: Rectangle {
-                    color: (combtn.hovered | combtn.pressed) ? "#42A1FA" : "transparent";
-                    radius: width / 2;
-                    BorderImage {
-                        anchors.fill: parent;
-                        source: "./image/com.png";
-                    }
-                }
-                onClicked: {
-                    Qt.quit();
-                }
-            }
-            Button {
-                id: modbusbtn;
-                // 原图是 1920 * 1080 的图，Button 是 383 * 80的大小
-                width: 383 * (root.width / 1920);
-                height: 80 * (root.height / 1080);
-                anchors.right: parent.right;
-                anchors.rightMargin: 58 * root.hRatio;
-                anchors.top: combtn.bottom;
-                anchors.topMargin: 40 * root.vRatio;
-                background: Rectangle {
-                    color: (modbusbtn.hovered | modbusbtn.pressed) ? "#42A1FA" : "transparent";
-                    radius: width / 2;
-                    BorderImage {
-                        anchors.fill: parent;
-                        source: "./image/modbus.png";
-                    }
-                }
-                onClicked: {
-                    Qt.quit();
-                }
-            }
-            Button {
-                id: readbtn;
-                // 原图是 1920 * 1080 的图，Button 是 383 * 80的大小
-                width: 383 * (root.width / 1920);
-                height: 80 * (root.height / 1080);
-                anchors.right: parent.right;
-                anchors.rightMargin: 58 * root.hRatio;
-                anchors.top: modbusbtn.bottom;
-                anchors.topMargin: 40 * root.vRatio;
-                background: Rectangle {
-                    color: (readbtn.hovered | readbtn.pressed) ? "#42A1FA" : "transparent";
-                    radius: width / 2;
-                    BorderImage {
-                        anchors.fill: parent;
-                        source: "./image/read.png";
-                    }
-                }
-                onClicked: {
-                    Qt.quit();
-                }
-            }
-            Button {
-                id: writebtn;
-                // 原图是 1920 * 1080 的图，Button 是 383 * 80的大小
-                width: 383 * (root.width / 1920);
-                height: 80 * (root.height / 1080);
-                anchors.right: parent.right;
-                anchors.rightMargin: 58 * root.hRatio;
-                anchors.top: readbtn.bottom;
-                anchors.topMargin: 40 * root.vRatio;
-                background: Rectangle {
-                    color: (writebtn.hovered | writebtn.pressed) ? "#42A1FA" : "transparent";
-                    radius: width / 2;
-                    BorderImage {
-                        anchors.fill: parent;
-                        source: "./image/write.png";
-                    }
-                }
-                onClicked: {
-                    Qt.quit();
-                }
-            }
-        }
-
-        // 主页显示区, 设置和曲线的显示
-        // 为主视图区，先用 温湿度展示 页面占坑
-        Rectangle {
-            id: chartDisplay;
-            Layout.rowSpan: 1;
-            width: 600 * root.hRatio;
-            height: 420 * root.vRatio;
-            color: "transparent";
-            // 单点测试图表
-            Rectangle {
-                id: singleChart;
-                anchors.top: parent.top;
+            // 背景图
+            Image {
+                id: titleImg;
+                // 30 是量 root._width,root._height 的图片中背景图的
+                // 左边加右边的距离,得出宽度，同理得出相对高度，以下都是
+                // 类似计算方法;
+                width: root.width - 30 * root.hRatio;
+                height: 55 * root.vRatio;
+                source: "./image/title.png";
+                fillMode: Image.Stretch;
                 anchors.left: parent.left;
-                width: parent.width;
-                height: 200 * root.vRatio;
-                color: "transparent";
-                Image {
-                    source: "./image/single.png";
-                    fillMode: Image.Stretch;
-                    anchors.fill: parent;
-                    z: 0;
-                }
+                anchors.leftMargin: 15 * root.hRatio;
+                anchors.top: parent.top;
+                anchors.topMargin: 20 * root.hRatio;
+                z: 0;
             }
-            // 多点测试图表
+            // LOGO
+            Image {
+                id: logo;
+                width: root.width * (568 / 1920);
+                height: logo.width * (48 / 568);
+                source: "./image/logo.png";
+                fillMode: Image.Stretch;
+                anchors.left: parent.left;
+                anchors.leftMargin: 27 * root.hRatio;
+                anchors.top: titleImg.top;
+                anchors.topMargin: 32 * ( root.height / root._height);
+                z: 1;
+            }
+
             Rectangle {
-                id: doubleChart;
-                anchors.top: singleChart.bottom;
+                id: titlebar;
+                width: 76;
+                height: 20;
+                anchors.right: parent.right;
+                anchors.top: titleImg.top;
                 anchors.topMargin: 20 * root.vRatio;
-                anchors.left: parent.left;
-                width: parent.width;
-                height: 200 * root.vRatio;
                 color: "transparent";
-                Image {
-                    source: "./image/double.png";
-                    fillMode: Image.Stretch;
-                    anchors.fill: parent;
-                    z: 0;
+                property bool isMax: false;
+
+                // 最小化, 最大化, 关闭按钮
+                Button {
+                    id: closeButton;
+                    width: 22 * root.hRatio; height:22 * root.vRatio;
+                    anchors.right: parent.right;
+                    anchors.rightMargin: 23 * root.hRatio;
+                    anchors.top: parent.top;
+                    ToolTip.text: "关闭";
+                    ToolTip.visible: hovered;
+
+                    onClicked: {
+                        // TODO: 增加相应的退出处理
+                        Qt.quit();
+                    }
+
+                    background: Rectangle {
+                        color: (closeButton.hovered | closeButton.pressed) ? "red" : "transparent";
+                        radius: width / 2;
+                        BorderImage {
+                            anchors.fill: parent;
+                            source: "./image/close.png";
+                        }
+                    }
                 }
+                Button {
+                    id: maxButton;
+                    width: 22 * root.hRatio; height: 22 * root.vRatio;
+                    anchors.right: closeButton.left;
+                    anchors.rightMargin: 8 * root.hRatio;
+                    anchors.top: closeButton.top;
+                    ToolTip.text: parent.isMax ? "还原" : "最大化";
+                    ToolTip.visible: hovered;
+                    Image {
+                        id: btnImage;
+                        fillMode: Image.Stretch;
+                        width: parent.width; height: parent.height;
+                        source: "./image/max.png";
+                    }
+                    background: Rectangle{
+                        color: "transparent";
+                    }
+
+                    onClicked: {
+                        handleMaxButton();
+                    }
+                }
+                Button {
+                    id: minButton;
+                    width: 22 * root.hRatio; height: 22 * root.vRatio;
+                    anchors.right: maxButton.left;
+                    anchors.rightMargin: 8 * root.hRatio;
+                    anchors.top: closeButton.top;
+                    ToolTip.text: "最小化";
+                    ToolTip.visible: hovered;
+                    background: Rectangle {
+                        color: "transparent";
+                        BorderImage {
+                            anchors.fill: parent;
+                            source: "./image/min.png";
+                        }
+                    }
+                    onClicked: root.visibility =  Window.Minimized;
+                }
+            }
+        }
+
+        Rectangle {
+            Layout.rowSpan: 1; Layout.columnSpan: 2;
+            Layout.fillHeight: true; Layout.fillWidth: true;
+            Layout.minimumWidth: 960; Layout.maximumWidth: 1920;
+            Layout.minimumHeight: 465; Layout.maximumHeight: 935;
+            Layout.preferredWidth: 960; Layout.preferredHeight: 465;
+            color: "transparent";
+            // 按钮导航栏
+            Rectangle {
+                id: leftNav;
+                width: 300 * root.hRatio;
+                height: 360 * root.vRatio;
+                color: "transparent";
+
+                Button {
+                    id: displaybtn;
+                    // 原图是 1920 * 1080 的图，Button 是 383 * 80的大小
+                    width: 383 * (root.width / 1920);
+                    height: 80 * (root.height / 1080);
+                    anchors.right: parent.right;
+                    anchors.rightMargin: 58 * root.hRatio;
+                    anchors.top: parent.top;
+                    anchors.topMargin: 30 * root.vRatio;
+                    background: Rectangle {
+                        color: (displaybtn.hovered | displaybtn.pressed) ? "#42A1FA" : "transparent";
+                        radius: width / 2;
+                        BorderImage {
+                            anchors.fill: parent;
+                            source: "./image/display.png";
+                        }
+                    }
+                    onClicked: {
+                        Qt.quit();
+                    }
+                }
+                Button {
+                    id: combtn;
+                    // 原图是 1920 * 1080 的图，Button 是 383 * 80的大小
+                    width: 383 * (root.width / 1920);
+                    height: 80 * (root.height / 1080);
+                    anchors.right: parent.right;
+                    anchors.rightMargin: 58 * root.hRatio;
+                    anchors.top: displaybtn.bottom;
+                    anchors.topMargin: 40 * root.vRatio;
+                    background: Rectangle {
+                        color: (combtn.hovered | combtn.pressed) ? "#42A1FA" : "transparent";
+                        radius: width / 2;
+                        BorderImage {
+                            anchors.fill: parent;
+                            source: "./image/com.png";
+                        }
+                    }
+                    onClicked: {
+                        Qt.quit();
+                    }
+                }
+                Button {
+                    id: modbusbtn;
+                    // 原图是 1920 * 1080 的图，Button 是 383 * 80的大小
+                    width: 383 * (root.width / 1920);
+                    height: 80 * (root.height / 1080);
+                    anchors.right: parent.right;
+                    anchors.rightMargin: 58 * root.hRatio;
+                    anchors.top: combtn.bottom;
+                    anchors.topMargin: 40 * root.vRatio;
+                    background: Rectangle {
+                        color: (modbusbtn.hovered | modbusbtn.pressed) ? "#42A1FA" : "transparent";
+                        radius: width / 2;
+                        BorderImage {
+                            anchors.fill: parent;
+                            source: "./image/modbus.png";
+                        }
+                    }
+                    onClicked: {
+                        Qt.quit();
+                    }
+                }
+                Button {
+                    id: readbtn;
+                    // 原图是 1920 * 1080 的图，Button 是 383 * 80的大小
+                    width: 383 * (root.width / 1920);
+                    height: 80 * (root.height / 1080);
+                    anchors.right: parent.right;
+                    anchors.rightMargin: 58 * root.hRatio;
+                    anchors.top: modbusbtn.bottom;
+                    anchors.topMargin: 40 * root.vRatio;
+                    background: Rectangle {
+                        color: (readbtn.hovered | readbtn.pressed) ? "#42A1FA" : "transparent";
+                        radius: width / 2;
+                        BorderImage {
+                            anchors.fill: parent;
+                            source: "./image/read.png";
+                        }
+                    }
+                    onClicked: {
+                        Qt.quit();
+                    }
+                }
+                Button {
+                    id: writebtn;
+                    // 原图是 1920 * 1080 的图，Button 是 383 * 80的大小
+                    width: 383 * (root.width / 1920);
+                    height: 80 * (root.height / 1080);
+                    anchors.right: parent.right;
+                    anchors.rightMargin: 58 * root.hRatio;
+                    anchors.top: readbtn.bottom;
+                    anchors.topMargin: 40 * root.vRatio;
+                    background: Rectangle {
+                        color: (writebtn.hovered | writebtn.pressed) ? "#42A1FA" : "transparent";
+                        radius: width / 2;
+                        BorderImage {
+                            anchors.fill: parent;
+                            source: "./image/write.png";
+                        }
+                    }
+                    onClicked: {
+                        Qt.quit();
+                    }
+                }
+            }
+
+            // 主页显示区, 设置和曲线的显示
+            // 为主视图区，先用 温湿度展示 页面占坑
+            Rectangle {
+                id: chartDisplay;
+                width: 600 * root.hRatio;
+                height: 420 * root.vRatio;
+                anchors.left: leftNav.right;
+                color: "transparent";
+
+                // 单点测试图表
+                Rectangle {
+                    id: singleChart;
+                    anchors.top: parent.top;
+                    anchors.left: parent.left;
+                    width: parent.width;
+                    height: 200 * root.vRatio;
+                    color: "transparent";
+                    Image {
+                        source: "./image/single.png";
+                        fillMode: Image.Stretch;
+                        anchors.fill: parent;
+                        z: 0;
+                    }
+                }
+                // 多点测试图表
+                Rectangle {
+                    id: doubleChart;
+                    anchors.top: singleChart.bottom;
+                    anchors.topMargin: 20 * root.vRatio;
+                    anchors.left: parent.left;
+                    width: parent.width;
+                    height: 200 * root.vRatio;
+                    color: "transparent";
+                    Image {
+                        source: "./image/double.png";
+                        fillMode: Image.Stretch;
+                        anchors.fill: parent;
+                        z: 0;
+                    }
+                }
+
             }
 
         }
     }
-
 
     // 主页的 js 全局函数
     function handleMaxButton(){
