@@ -5,5 +5,6 @@
         <file>LineChart.qml</file>
         <file>NavSwipe.qml</file>
         <file>TempHum.qml</file>
+        <file>DisplayChart.qml</file>
     </qresource>
 </RCC>
