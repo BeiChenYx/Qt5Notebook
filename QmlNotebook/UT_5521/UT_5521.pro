@@ -29,4 +29,12 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    ItemRect.qml
+    DisplayChart.qml \
+    IStackView.qml \
+    ItemRect.qml \
+    LineChart.qml \
+    NavSwipe.qml \
+    PieChart.qml \
+    Swipe.qml \
+    TempHum.qml \
+    main.qml

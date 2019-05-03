@@ -25,5 +25,4 @@ Item {
 //          othersSlice = pieSeries.append("Others", 52.0);
           pieSeries.find("Volkswagen").exploded = true;
       }
-
 }
