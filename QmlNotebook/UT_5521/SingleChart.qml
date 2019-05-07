@@ -1,25 +1,86 @@
 import QtQuick 2.0
 import QtCharts 2.3
-import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.5
+import QtQuick.Layouts 1.12
 
+/*
+ * 使用 StackView 的方式切换曲线配置和曲线展示的页面,
+ * 曲线的配置主要有 设备选择 和 日期选择，日期如果为当前日期
+ * 则显示当前实时数据，如果是历史日期，则从数据库中获取历史数据；
+ */
 Rectangle {
-    id: deviceChart;
-    implicitWidth: 400;
-    implicitHeight: 300;
+    id: spline;
     color: "transparent";
-    property int index: 0
-    function initChart(title, index)
-    {
-        chartView.title = title;
-        deviceChart.index = index;
+    StackView {
+        id: stackView;
+        anchors.fill: parent;
+        initialItem: singleChart;
+        clip: true;
     }
-    signal preView(int index);
-    signal nextView(int index);
 
-    RowLayout {
-        Button {
-            id: leftBtn;
+    Component {
+        id: configView;
+        GridLayout {
+            rows: 3;
+            columns: 2;
+            rowSpacing: 10;
+            columnSpacing: 5;
+
+            width: 100;
+            height: 100;
+            Label {
+                width: 20;
+                Layout.rowSpan: 1;
+                Layout.columnSpan: 1;
+                Layout.leftMargin: 50;
+                Layout.topMargin: 50;
+                color: "#59BAF2";
+                text: "从机地址:";
+            }
+            ComboBox {
+                id: addrComboBox
+                Layout.topMargin: 50;
+                Layout.rowSpan: 1;
+                Layout.columnSpan: 1;
+                implicitWidth: 80;
+                model: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+            }
+
+            Label {
+                Layout.leftMargin: 50;
+                width: 20;
+                Layout.rowSpan: 1;
+                Layout.columnSpan: 1;
+                text: "图表日期:";
+                color: "#59BAF2";
+            }
+            Loader {
+                Layout.rowSpan: 1;
+                Layout.columnSpan: 1;
+                id: calendarSelect;
+                source: "./DateTimeEdit.qml"
+            }
+            Button {
+                Layout.rowSpan: 1;
+                Layout.columnSpan: 1;
+                Layout.leftMargin: 50;
+                text: "保存"
+                onClicked: {
+                    if(stackView.depth >= 1){
+                        stackView.pop();
+                    }
+                }
+            }
+
+        }
+    }
+
+    Component {
+        id: singleChart;
+        // 单点测试图表
+        RowLayout {
+            Button {
+                id: leftBtn;
                 implicitWidth: 20;
                 implicitHeight: 20;
                 background: Rectangle{
@@ -29,12 +90,10 @@ Rectangle {
                         anchors.fill: parent;
                     }
                 }
-                onClicked: deviceChart.preView(deviceChart.index);
             }
-        ChartView {
-            id: chartView;
-            implicitWidth: deviceChart.width - leftBtn.width - rightBtn.width - 10;
-            implicitHeight: deviceChart.height;
+            ChartView {
+                implicitWidth: parent.width - leftBtn.width - rightBtn.width - 10;
+                implicitHeight: parent.height;
                 antialiasing: true;
                 backgroundColor: "transparent";
                 legend.alignment: Qt.AlignRight;
@@ -45,7 +104,7 @@ Rectangle {
                 margins.bottom: 0;
                 margins.left: 0;
                 margins.right: 0;
-    //            title: "设备地址为1的温湿度曲线"
+                title: "设备地址为1的温湿度曲线"
                 titleColor: "#59BAF2";
 
                 DateTimeAxis{
@@ -84,9 +143,9 @@ Rectangle {
                     axisYRight: axisYRight;
                 }
             }
-        Button {
-            id: rightBtn;
-            implicitWidth: 20;
+            Button {
+                id: rightBtn;
+                implicitWidth: 20;
                 implicitHeight: 20;
                 background: Rectangle{
                     color: (rightBtn.hovered | rightBtn.pressed) ? "#42A1FA" : "transparent";
@@ -95,7 +154,10 @@ Rectangle {
                         anchors.fill: parent;
                     }
                 }
-                onClicked: deviceChart.nextView(deviceChart.index);
+                onClicked: {
+                    stackView.push(configView);
+                }
             }
+        }
     }
 }

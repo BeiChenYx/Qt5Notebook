@@ -29,7 +29,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    DisplayChart.qml \
     IStackView.qml \
     ItemRect.qml \
     LineChart.qml \
@@ -37,4 +36,8 @@ DISTFILES += \
     PieChart.qml \
     Swipe.qml \
     TempHum.qml \
-    main.qml
+    main.qml \
+    DateTimeEdit.qml \
+    SingleChart.qml \
+    DoubleChart.qml \
+    LineChart.qml
