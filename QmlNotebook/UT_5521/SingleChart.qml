@@ -44,6 +44,11 @@ Rectangle {
                 Layout.columnSpan: 1;
                 implicitWidth: 80;
                 model: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+                background: Rectangle {
+                    color: "transparent";
+                    border.color: "#3270E1";
+                    radius: control.width / 10;
+                }
             }
 
             Label {
@@ -61,10 +66,28 @@ Rectangle {
                 source: "./DateTimeEdit.qml"
             }
             Button {
+                id: control;
                 Layout.rowSpan: 1;
                 Layout.columnSpan: 1;
                 Layout.leftMargin: 50;
                 text: "保存"
+                contentItem: Text{
+                    text: control.text
+                    font: control.font
+                    opacity: enabled ? 1.0 : 0.3
+                    color: control.down ? "#17a81a" : "#59BAF2";
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
+                background: Rectangle{
+                    implicitHeight: 30;
+                    implicitWidth: 100;
+                    color: "transparent";
+                    border.color: "#3270E1";
+                    radius: control.width / 10;
+                }
+
                 onClicked: {
                     if(stackView.depth >= 1){
                         stackView.pop();

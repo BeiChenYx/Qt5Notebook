@@ -33,7 +33,6 @@ DISTFILES += \
     ItemRect.qml \
     LineChart.qml \
     NavSwipe.qml \
-    PieChart.qml \
     Swipe.qml \
     TempHum.qml \
     main.qml \

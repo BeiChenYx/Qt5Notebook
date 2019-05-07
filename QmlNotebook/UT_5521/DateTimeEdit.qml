@@ -4,49 +4,49 @@ import QtQuick.Layouts 1.12
 import QtQuick.Controls 1.4 as OldControl
 
 Rectangle {
-   width: 100;
-   height: 30;
+    implicitHeight: 30;
+    implicitWidth: 100;
+    color: "transparent";
 
-   Rectangle {
-       anchors.fill: parent;
-       color: "gray";
-       TextInput {
-           id: dateTimeBtn;
-           anchors.centerIn: parent;
-           focus: true;
-           font.pixelSize: 16;
-           text: "双击选择日期";
-       }
-       MouseArea {
-           anchors.fill: parent;
-           onClicked: {
-               // 弹出日历
-               chartCalendar.sourceComponent = cal
-               chartCalendar.x = parent.x;
-               chartCalendar.y = parent.y + parent.height;
-           }
-       }
-   }
+    TextField {
+        id: dateTimeBtn;
+        anchors.centerIn: parent;
+        placeholderText: qsTr("双击选择日期")
+        focus: true;
+        font.pixelSize: 12;
+        color: "#59BAF2";
 
-   Component {
-       id: cal;
-       OldControl.Calendar {
-           minimumDate: new Date(2015, 1, 1)
-           maximumDate: new Date();
-           signal endClicked(var date);
-           onDoubleClicked: endClicked(date);
-       }
-   }
+        background: Rectangle {
+            implicitWidth: 100
+            implicitHeight: 30
+            color: "transparent";
+            border.color: "#3270E1";
+        }
+    }
 
-   Loader {
-       id: chartCalendar;
-   }
-   Connections {
-       target: chartCalendar.item;
-       onEndClicked: {
-           chartCalendar.sourceComponent = undefined;
-           console.log("date: ", date);
-           dateTimeBtn.text = date.toLocaleDateString(Qt.locale(), "yyyy-MM-dd")
-       }
-   }
+    MouseArea {
+        anchors.fill: parent;
+        // 弹出日历
+        onClicked: calPopup.open();
+    }
+
+    Popup {
+        id: calPopup;
+        modal: true;
+        focus: true;
+        closePolicy: Popup.CloseOnEscape;
+        x: dateTimeBtn.x;
+        y: dateTimeBtn.y + dateTimeBtn.height;
+        OldControl.Calendar {
+            minimumDate: new Date(2015, 1, 1)
+            maximumDate: new Date();
+
+            onDoubleClicked: {
+                dateTimeBtn.text = date.toLocaleDateString(Qt.locale(), "yyyy-MM-dd");
+                calPopup.close();
+            }
+        }
+
+    }
+
 }
