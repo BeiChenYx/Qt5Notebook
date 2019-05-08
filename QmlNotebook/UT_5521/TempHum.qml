@@ -201,7 +201,11 @@ ApplicationWindow {
             Layout.minimumWidth: 960; Layout.maximumWidth: 1920;
             Layout.minimumHeight: 75; Layout.maximumHeight: 145;
             Layout.preferredWidth: 960; Layout.preferredHeight: 75;
+            Layout.topMargin: 20;
+            Layout.leftMargin: 15;
+            Layout.rightMargin: 15;
             color: "transparent";
+            implicitWidth: root.width; implicitHeight: 55;
 
             // 背景图
             Image {
@@ -214,9 +218,9 @@ ApplicationWindow {
                 source: "./image/title.png";
                 fillMode: Image.Stretch;
                 anchors.left: parent.left;
-                anchors.leftMargin: 15 * root.hRatio;
+//                anchors.leftMargin: 15 * root.hRatio;
                 anchors.top: parent.top;
-                anchors.topMargin: 20 * root.hRatio;
+//                anchors.topMargin: 20 * root.hRatio;
                 z: 0;
             }
             // LOGO
@@ -226,10 +230,10 @@ ApplicationWindow {
                 height: logo.width * (48 / 568);
                 source: "./image/logo.png";
                 fillMode: Image.Stretch;
-                anchors.left: parent.left;
-                anchors.leftMargin: 27 * root.hRatio;
-                anchors.top: titleImg.top;
-                anchors.topMargin: 32 * ( root.height / root._height);
+//                anchors.left: parent.left;
+//                anchors.leftMargin: 27 * root.hRatio;
+//                anchors.top: titleImg.top;
+//                anchors.topMargin: 32 * ( root.height / root._height);
                 z: 1;
             }
 

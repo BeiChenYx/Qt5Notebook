@@ -39,4 +39,7 @@ DISTFILES += \
     DateTimeEdit.qml \
     SingleChart.qml \
     DoubleChart.qml \
-    LineChart.qml
+    LineChart.qml \
+    UButton.qml \
+    UComboBox.qml \
+    UTextField.qml

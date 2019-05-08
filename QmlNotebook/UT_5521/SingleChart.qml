@@ -32,27 +32,22 @@ Rectangle {
                 width: 20;
                 Layout.rowSpan: 1;
                 Layout.columnSpan: 1;
-                Layout.leftMargin: 50;
-                Layout.topMargin: 50;
+                Layout.leftMargin: 40;
+                Layout.topMargin: 25;
                 color: "#59BAF2";
                 text: "从机地址:";
             }
-            ComboBox {
+            UComboBox {
                 id: addrComboBox
-                Layout.topMargin: 50;
+                Layout.topMargin: 25;
                 Layout.rowSpan: 1;
                 Layout.columnSpan: 1;
                 implicitWidth: 80;
                 model: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
-                background: Rectangle {
-                    color: "transparent";
-                    border.color: "#3270E1";
-                    radius: control.width / 10;
-                }
             }
 
             Label {
-                Layout.leftMargin: 50;
+                Layout.leftMargin: 40;
                 width: 20;
                 Layout.rowSpan: 1;
                 Layout.columnSpan: 1;
@@ -65,28 +60,12 @@ Rectangle {
                 id: calendarSelect;
                 source: "./DateTimeEdit.qml"
             }
-            Button {
+            UButton {
                 id: control;
                 Layout.rowSpan: 1;
                 Layout.columnSpan: 1;
-                Layout.leftMargin: 50;
+                Layout.leftMargin: 40;
                 text: "保存"
-                contentItem: Text{
-                    text: control.text
-                    font: control.font
-                    opacity: enabled ? 1.0 : 0.3
-                    color: control.down ? "#17a81a" : "#59BAF2";
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    elide: Text.ElideRight
-                }
-                background: Rectangle{
-                    implicitHeight: 30;
-                    implicitWidth: 100;
-                    color: "transparent";
-                    border.color: "#3270E1";
-                    radius: control.width / 10;
-                }
 
                 onClicked: {
                     if(stackView.depth >= 1){
@@ -94,7 +73,6 @@ Rectangle {
                     }
                 }
             }
-
         }
     }
 
