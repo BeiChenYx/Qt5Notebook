@@ -3,7 +3,7 @@ import QtQuick.Controls 2.5
 
 TextField {
 //    id: dateTimeBtn;
-    anchors.centerIn: parent;
+//    anchors.centerIn: parent;
 //    placeholderText: qsTr("双击选择日期")
     focus: true;
     font.pixelSize: 12;

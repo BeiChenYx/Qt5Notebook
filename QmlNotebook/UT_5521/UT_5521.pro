@@ -42,4 +42,8 @@ DISTFILES += \
     LineChart.qml \
     UButton.qml \
     UComboBox.qml \
-    UTextField.qml
+    UTextField.qml \
+    Home.qml \
+    ComConfig.qml \
+    ULabel.qml \
+    ModbusTest.qml

@@ -64,7 +64,9 @@ Rectangle {
                 id: control;
                 Layout.rowSpan: 1;
                 Layout.columnSpan: 1;
-                Layout.leftMargin: 40;
+//                Layout.leftMargi: 40;
+                Layout.column: 1;
+                Layout.row: 2;
                 text: "保存"
 
                 onClicked: {

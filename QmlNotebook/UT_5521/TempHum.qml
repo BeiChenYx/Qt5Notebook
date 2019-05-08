@@ -205,7 +205,6 @@ ApplicationWindow {
             Layout.leftMargin: 15;
             Layout.rightMargin: 15;
             color: "transparent";
-            implicitWidth: root.width; implicitHeight: 55;
 
             // 背景图
             Image {
@@ -218,9 +217,7 @@ ApplicationWindow {
                 source: "./image/title.png";
                 fillMode: Image.Stretch;
                 anchors.left: parent.left;
-//                anchors.leftMargin: 15 * root.hRatio;
                 anchors.top: parent.top;
-//                anchors.topMargin: 20 * root.hRatio;
                 z: 0;
             }
             // LOGO
@@ -230,10 +227,10 @@ ApplicationWindow {
                 height: logo.width * (48 / 568);
                 source: "./image/logo.png";
                 fillMode: Image.Stretch;
-//                anchors.left: parent.left;
-//                anchors.leftMargin: 27 * root.hRatio;
-//                anchors.top: titleImg.top;
-//                anchors.topMargin: 32 * ( root.height / root._height);
+                anchors.left: parent.left;
+                anchors.leftMargin: 27 * root.hRatio;
+                anchors.top: titleImg.top;
+                anchors.topMargin: 32 * ( root.height / root._height);
                 z: 1;
             }
 
@@ -345,7 +342,7 @@ ApplicationWindow {
                         }
                     }
                     onClicked: {
-                        Qt.quit();
+                        mainView.currentIndex = 0;
                     }
                 }
                 Button {
@@ -366,7 +363,7 @@ ApplicationWindow {
                         }
                     }
                     onClicked: {
-                        Qt.quit();
+                        mainView.currentIndex = 1;
                     }
                 }
                 Button {
@@ -387,7 +384,7 @@ ApplicationWindow {
                         }
                     }
                     onClicked: {
-                        Qt.quit();
+                        mainView.currentIndex = 2;
                     }
                 }
                 Button {
@@ -408,7 +405,7 @@ ApplicationWindow {
                         }
                     }
                     onClicked: {
-                        Qt.quit();
+                        mainView.currentIndex = 3;
                     }
                 }
                 Button {
@@ -429,70 +426,29 @@ ApplicationWindow {
                         }
                     }
                     onClicked: {
-                        Qt.quit();
+                        mainView.currentIndex = 4;
                     }
                 }
             }
 
-            // 主页显示区, 设置和曲线的显示
-            // 为主视图区，先用 温湿度展示 页面占坑
-            Rectangle {
-                id: chartDisplay;
+            StackLayout {
+                id: mainView;
                 width: 600 * root.hRatio;
                 height: 420 * root.vRatio;
                 anchors.left: leftNav.right;
-                color: "transparent";
 
-                // 单点测试图表
-                Rectangle {
-                    id: singleChart;
-                    anchors.top: parent.top;
-                    anchors.left: parent.left;
-                    width: parent.width;
-                    height: 200 * root.vRatio;
-                    color: "transparent";
-                    Image {
-                        source: "./image/single.png";
-                        fillMode: Image.Stretch;
-                        anchors.fill: parent;
-                        z: 0;
-                    }
-                    Loader {
-                        id: singleStackView;
-                        source: "./SingleChart.qml";
-                        anchors.fill: parent;
-                        anchors.topMargin: 25 * root.vRatio;
-                        anchors.leftMargin: 10 * root.vRatio;
-                        anchors.rightMargin: 10 * root.vRatio;
-                        z: 1;
-                    }
+                Loader {
+                    id: home;
+                    source: "./Home.qml";
                 }
-                // 多点测试图表
-                Rectangle {
-                    id: doubleChart;
-                    anchors.top: singleChart.bottom;
-                    anchors.topMargin: 20 * root.vRatio;
-                    anchors.left: parent.left;
-                    width: parent.width;
-                    height: 200 * root.vRatio;
-                    color: "transparent";
-                    Image {
-                        source: "./image/double.png";
-                        fillMode: Image.Stretch;
-                        anchors.fill: parent;
-                        z: 0;
-                    }
-                    Loader {
-                        id: doubleStackView;
-                        source: "./DoubleChart.qml";
-                        anchors.fill: parent;
-                        anchors.topMargin: 25 * root.vRatio;
-                        anchors.leftMargin: 10 * root.vRatio;
-                        anchors.rightMargin: 10 * root.vRatio;
-                        z: 1;
-                    }
+                Loader {
+                    id: comConfig;
+                    source: "./ComConfig.qml";
                 }
-
+                Loader {
+                    id: modbusTest;
+                    source: "./ModbusTest.qml";
+                }
             }
 
         }
@@ -509,6 +465,10 @@ ApplicationWindow {
             titlebar.isMax = true;
             btnImage.source = "./image/reset.png";
         }
+    }
+
+    Component.onCompleted: {
+        mainView.currentIndex = 0
     }
 
 }
