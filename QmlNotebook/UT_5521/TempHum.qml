@@ -449,6 +449,14 @@ ApplicationWindow {
                     id: modbusTest;
                     source: "./ModbusTest.qml";
                 }
+                Loader {
+                    id: readCmd;
+                    source: "./ReadCmd.qml";
+                }
+                Loader {
+                    id: modifyCmd;
+                    source: "./ModifyCmd.qml";
+                }
             }
 
         }

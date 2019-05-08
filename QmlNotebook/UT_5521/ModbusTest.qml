@@ -8,7 +8,7 @@ Rectangle {
         columns: 7;
         rows: 9;
         rowSpacing: 10;
-        columnSpacing: 10;
+        columnSpacing: 15;
 
         ULabel {
             Layout.topMargin: 30;
@@ -72,7 +72,7 @@ Rectangle {
         }
 
         UButton {
-            Layout.row: 3; Layout.column: 3;
+            Layout.row: 3; Layout.column: 4;
             text: "读取";
         }
 
@@ -91,7 +91,7 @@ Rectangle {
         }
         ULabel {
             Layout.row: 5; Layout.column: 3;
-            text: "结束地址";
+            text: "结束地址:";
         }
         UTextField {
             Layout.row: 5; Layout.column: 4;
@@ -106,7 +106,7 @@ Rectangle {
             Layout.column: 1;
             Layout.columnSpan: 6;
             placeholderText: "010400000001";
-            implicitWidth: 335;
+            implicitWidth: 330;
         }
 
         ULabel {
@@ -117,7 +117,7 @@ Rectangle {
             Layout.row: 7;
             Layout.column: 1;
             Layout.columnSpan: 6;
-            implicitWidth: 335;
+            implicitWidth: 330;
         }
         ULabel {
             Layout.row: 8; Layout.column: 0;
@@ -128,7 +128,7 @@ Rectangle {
             text: "1000";
         }
         UButton {
-            Layout.row: 8; Layout.column: 3;
+            Layout.row: 8; Layout.column: 4;
             text: "连续读";
         }
 

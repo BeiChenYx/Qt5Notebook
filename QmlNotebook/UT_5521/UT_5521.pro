@@ -46,4 +46,6 @@ DISTFILES += \
     Home.qml \
     ComConfig.qml \
     ULabel.qml \
-    ModbusTest.qml
+    ModbusTest.qml \
+    ReadCmd.qml \
+    ModifyCmd.qml
