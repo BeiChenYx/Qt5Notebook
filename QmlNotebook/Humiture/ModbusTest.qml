@@ -1,9 +1,16 @@
 import QtQuick 2.0
-import QtQuick.Controls 2.5
-import QtQuick.Layouts 1.12
+import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.4
+import an.qt.HandleHumiture 1.0
 
 Rectangle {
+    visible: true;
     color: "transparent";
+
+    HandleHumiture {
+        id: modbusTestHanle;
+    }
+
     GridLayout {
         columns: 7;
         rows: 9;
@@ -24,6 +31,7 @@ Rectangle {
             text: "反馈温度:";
         }
         UTextField {
+            id: temperatureField;
             Layout.row: 1; Layout.column: 1;
         }
         ULabel{
@@ -36,6 +44,7 @@ Rectangle {
             text: "反馈湿度:";
         }
         UTextField{
+            id: humidityField;
             Layout.row: 1; Layout.column: 4;
         }
         ULabel {
@@ -49,6 +58,7 @@ Rectangle {
             text: "设备地址:";
         }
         UTextField {
+            id: deviceAddr;
             Layout.row: 2; Layout.column: 1;
             placeholderText: "01";
         }
@@ -58,6 +68,7 @@ Rectangle {
             text: "寄存器地址:";
         }
         UTextField{
+            id: registerAddr;
             Layout.row: 2; Layout.column: 4;
             placeholderText: "0000";
         }
@@ -67,6 +78,7 @@ Rectangle {
             text: "寄存器长度:";
         }
         UTextField {
+            id: registerLen;
             Layout.row: 3; Layout.column: 1;
             placeholderText: "0001";
         }
@@ -74,6 +86,12 @@ Rectangle {
         UButton {
             Layout.row: 3; Layout.column: 4;
             text: "读取";
+            onClicked: {
+                var devAddr = parseInt(deviceAddr.text);
+                var regAddr = parseInt(registerAddr.text);
+                var regLen = parseInt(registerLen.text);
+                modbusTestHanle.onReadHumiture(devAddr, regAddr, regLen);
+            }
         }
 
         // 循环读取
@@ -86,6 +104,7 @@ Rectangle {
             text: "开始地址:";
         }
         UTextField {
+            id: deviceStartAddr;
             Layout.row: 5; Layout.column: 1;
             placeholderText: "01";
         }
@@ -94,6 +113,7 @@ Rectangle {
             text: "结束地址:";
         }
         UTextField {
+            id: deviceStopAddr;
             Layout.row: 5; Layout.column: 4;
             placeholderText: "16";
         }
@@ -124,13 +144,31 @@ Rectangle {
             text: "循环间隔(ms):";
         }
         UTextField {
+            id: times;
             Layout.row: 8; Layout.column: 1;
             text: "1000";
         }
         UButton {
             Layout.row: 8; Layout.column: 4;
             text: "连续读";
+            onClicked: {
+                var devStartAddr = parseInt(deviceStartAddr.text);
+                var devStopAddr = parseInt(deviceStopAddr.text);
+                var regAddr = parseInt(registerAddr.text);
+                var regLen = parseInt(registerLen.text);
+                var timesInt = parseInt(times.text);
+                modbusTestHanle.onTimesReadHumiture(
+                            devStartAddr, devStartAddr,
+                            regAddr, regLen, timesInt);
+            }
         }
+    }
 
+    Connections {
+        target: modbusTestHanle;
+        onHumitureFeedback: {
+            temperatureField.text = temperature;
+            humidityField.text = humidity;
+        }
     }
 }

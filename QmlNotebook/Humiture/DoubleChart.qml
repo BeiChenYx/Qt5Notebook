@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import QtCharts 2.3
-import QtQuick.Controls 2.5
-import QtQuick.Layouts 1.12
+import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.4
 
 /*
  * 使用 StackView 的方式切换曲线配置和曲线展示的页面,
@@ -24,10 +24,10 @@ Rectangle {
     Component.onCompleted: {
         // 初始化 SwipeView 根据底层设备个数，默认16个
         for(var i = 0; i < 16; i++) {
-            var chartComponent = Qt.createComponent("./LineChart.qml");
+            var chartComponent = Qt.createComponent("qrc:/LineChart.qml");
             if(chartComponent.status === Component.Ready){
                 var deviceChart = chartComponent.createObject(containerView)
-                deviceChart.initChart("设备地址为" + (i + 1) + "的温湿度曲线", i);
+                deviceChart.initChart("设备地址为" + (i + 1) + "的温湿度曲线", i)
                 deviceChart.preView.connect(spline.onPreView);
                 deviceChart.nextView.connect(spline.onNextView);
                 containerView.addItem(deviceChart);

@@ -1,12 +1,13 @@
 import QtQuick 2.0
-import QtQuick.Controls 2.5
-import QtQuick.Layouts 1.12
+import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.4
 import QtQuick.Controls 1.4 as OldControl
 
 Rectangle {
     implicitHeight: 30;
     implicitWidth: 100;
     color: "transparent";
+    property string currentText: "";
 
     TextField {
         id: dateTimeBtn;
@@ -43,6 +44,7 @@ Rectangle {
 
             onDoubleClicked: {
                 dateTimeBtn.text = date.toLocaleDateString(Qt.locale(), "yyyy-MM-dd");
+                currentText = dateTimeBtn.text;
                 calPopup.close();
             }
         }

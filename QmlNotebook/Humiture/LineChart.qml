@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import QtCharts 2.3
-import QtQuick.Layouts 1.12
-import QtQuick.Controls 2.5
+import QtQuick.Layouts 1.4
+import QtQuick.Controls 2.0
 
 Rectangle {
     id: deviceChart;
@@ -25,7 +25,7 @@ Rectangle {
                 background: Rectangle{
                     color: (leftBtn.hovered | leftBtn.pressed) ? "#42A1FA" : "transparent";
                     BorderImage {
-                        source: "./image/left.png"
+                        source: "qrc:/image/left.png"
                         anchors.fill: parent;
                     }
                 }
@@ -91,7 +91,7 @@ Rectangle {
                 background: Rectangle{
                     color: (rightBtn.hovered | rightBtn.pressed) ? "#42A1FA" : "transparent";
                     BorderImage {
-                        source: "./image/right.png"
+                        source: "qrc:/image/right.png"
                         anchors.fill: parent;
                     }
                 }

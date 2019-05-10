@@ -1,6 +1,6 @@
-import QtQuick 2.0
-import QtQuick.Controls 2.5
-import QtQuick.Layouts 1.12
+import QtQuick 2.3
+import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.4
 
 // 主页显示区, 设置和曲线的显示
 Rectangle {
@@ -18,14 +18,14 @@ Rectangle {
         height: 200 * root.vRatio;
         color: "transparent";
         Image {
-            source: "./image/single.png";
+            source: "qrc:/image/single.png";
             fillMode: Image.Stretch;
             anchors.fill: parent;
             z: 0;
         }
         Loader {
             id: singleStackView;
-            source: "./SingleChart.qml";
+            source: "qrc:/SingleChart.qml";
             anchors.fill: parent;
             anchors.topMargin: 25 * root.vRatio;
             anchors.leftMargin: 10 * root.vRatio;
@@ -43,14 +43,14 @@ Rectangle {
         height: 200 * root.vRatio;
         color: "transparent";
         Image {
-            source: "./image/double.png";
+            source: "qrc:/image/double.png";
             fillMode: Image.Stretch;
             anchors.fill: parent;
             z: 0;
         }
         Loader {
             id: doubleStackView;
-            source: "./DoubleChart.qml";
+            source: "qrc:/DoubleChart.qml";
             anchors.fill: parent;
             anchors.topMargin: 25 * root.vRatio;
             anchors.leftMargin: 10 * root.vRatio;

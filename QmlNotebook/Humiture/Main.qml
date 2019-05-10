@@ -1,14 +1,12 @@
-// 温湿度监控平台的主页
-import QtQuick 2.12
+import QtQuick 2.9
 import QtQuick.Window 2.2
-import QtQuick.Controls 2.5
-import QtQuick.Layouts 1.12
+import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.4
 
 ApplicationWindow {
     id: root;
     visible: true;
-    height: rootGL.implicitHeight;
-    width: rootGL.implicitWidth;
+    width: 960; height: 540;
     property int _width: 960;
     property int _height: 540;
     property double hRatio: width / _width;
@@ -18,7 +16,7 @@ ApplicationWindow {
 
     BorderImage {
         id: name
-        source: "./image/background.jpg";
+        source: "qrc:/image/background.jpg";
         width: root.width; height: root.height;
         border.left: 5; border.top: 5
         border.right: 5; border.bottom: 5
@@ -31,13 +29,13 @@ ApplicationWindow {
         acceptedButtons: Qt.LeftButton;
         hoverEnabled: true;
         /*
-        * 将界面分成一个九宫格分别为: LeftTop Top RightTop Left Center Right
-        * LeftBottom Bottom RightBottom, 鼠标在这九个区域内需要做特殊处理.
-        * 边界缩放范围 step = 5, 也就是说鼠标在四边 step 范围内且没有按住左键
-        * 的情况下，只改变鼠标形状，按住了左键然后移动鼠标，就需要处理缩放界面.
-        * 如果在边界缩放范围外，且在界面内任何主界面(非子控件),都正常显示鼠标
-        * 形状，如果按住左键并移动鼠标，则移动主界面，放开鼠标左键，则恢复鼠标形状
-        */
+            * 将界面分成一个九宫格分别为: LeftTop Top RightTop Left Center Right
+            * LeftBottom Bottom RightBottom, 鼠标在这九个区域内需要做特殊处理.
+            * 边界缩放范围 step = 5, 也就是说鼠标在四边 step 范围内且没有按住左键
+            * 的情况下，只改变鼠标形状，按住了左键然后移动鼠标，就需要处理缩放界面.
+            * 如果在边界缩放范围外，且在界面内任何主界面(非子控件),都正常显示鼠标
+            * 形状，如果按住左键并移动鼠标，则移动主界面，放开鼠标左键，则恢复鼠标形状
+            */
         property point clickPos: "0,0"
 
         // 边框缩放的范围
@@ -79,42 +77,42 @@ ApplicationWindow {
                     break;
                 case 1:
                     // TODO: 缩放功能目前有bug,先不上线
-//                    root.width = root.width - delta.x;
-//                    root.height = root.height - delta.y
+                    //                    root.width = root.width - delta.x;
+                    //                    root.height = root.height - delta.y
                     root.setX(root.x + delta.x)
                     root.setY(root.y + delta.y)
                     break;
                 case 2:
-//                    root.width = root.width - delta.x;
+                    //                    root.width = root.width - delta.x;
                     root.setX(root.x + delta.x)
                     break;
                 case 3:
-//                    root.width = root.width - delta.x;
-//                    root.height = root.height + delta.y;
+                    //                    root.width = root.width - delta.x;
+                    //                    root.height = root.height + delta.y;
                     root.setX(root.x + delta.x)
                     clickPos = Qt.point(mouse.x, mouse.y)
                     break;
                 case 4:
-//                    root.height = root.height - delta.y
+                    //                    root.height = root.height - delta.y
                     root.setY(root.y + delta.y)
                     break;
                 case 6:
-//                    root.height = root.height + delta.y;
+                    //                    root.height = root.height + delta.y;
                     clickPos = Qt.point(mouse.x, mouse.y)
                     break;
                 case 7:
-//                    root.width = root.width + delta.x;
-//                    root.height = root.height - delta.y;
+                    //                    root.width = root.width + delta.x;
+                    //                    root.height = root.height - delta.y;
                     root.setY(root.y + delta.y)
                     clickPos = Qt.point(mouse.x, mouse.y)
                     break;
                 case 8:
-//                    root.width = root.width + delta.x;
+                    //                    root.width = root.width + delta.x;
                     clickPos = Qt.point(mouse.x, mouse.y)
                     break;
                 case 9:
-//                    root.width = root.width + delta.x;
-//                    root.height = root.height + delta.y;
+                    //                    root.width = root.width + delta.x;
+                    //                    root.height = root.height + delta.y;
                     clickPos = Qt.point(mouse.x, mouse.y)
                     break;
                 default:
@@ -129,60 +127,60 @@ ApplicationWindow {
                 }
 
             }
-        /* TODO: 鼠标改变窗口大小的功能实现有bug, 在右下角经常无法触发鼠标，因此屏蔽这个功能
-            else
-            {
-                // 没有按左键，只需要改变鼠标形状
-                if(mouseX <= step && mouseX > 0){
-                    // 九宫格左侧三个格子,宽度 step, 分别处理三个格子区域的鼠标形状
-                    if(mouseY < step && mouseY > 0){
-                        // 第一行
-                        mouseState = 1;
-                        rootMouseArea.cursorShape = Qt.SizeFDiagCursor;
+            /* TODO: 鼠标改变窗口大小的功能实现有bug, 在右下角经常无法触发鼠标，因此屏蔽这个功能
+                else
+                {
+                    // 没有按左键，只需要改变鼠标形状
+                    if(mouseX <= step && mouseX > 0){
+                        // 九宫格左侧三个格子,宽度 step, 分别处理三个格子区域的鼠标形状
+                        if(mouseY < step && mouseY > 0){
+                            // 第一行
+                            mouseState = 1;
+                            rootMouseArea.cursorShape = Qt.SizeFDiagCursor;
+                        }
+                        else if(mouseY >= step && mouseY < root.height - step){
+                            // 第二行
+                            mouseState = 2;
+                            rootMouseArea.cursorShape = Qt.SizeHorCursor;
+                        }
+                        else if(mouseY >= root.height - step && mouseY <= root.height){
+                            // 第三行
+                            mouseState = 3;
+                            rootMouseArea.cursorShape = Qt.SizeBDiagCursor;
+                        }
                     }
-                    else if(mouseY >= step && mouseY < root.height - step){
-                        // 第二行
-                        mouseState = 2;
-                        rootMouseArea.cursorShape = Qt.SizeHorCursor;
+                    else if(mouseX > step && mouseX <= root.width - step){
+                        // 九宫格中间第二列的三行
+                        if(mouseY < step && mouseY > 0){
+                            mouseState = 4;
+                            rootMouseArea.cursorShape = Qt.SizeVerCursor;
+                        }
+                        else if(mouseY >= step && mouseY < root.height - step){
+                            mouseState = 5;
+                            rootMouseArea.cursorShape = Qt.ArrowCursor;
+                        }
+                        else if(mouseY >= root.height - step && mouseY <= root.height){
+                            mouseState = 6;
+                            rootMouseArea.cursorShape = Qt.SizeVerCursor;
+                        }
                     }
-                    else if(mouseY >= root.height - step && mouseY <= root.height){
-                        // 第三行
-                        mouseState = 3;
-                        rootMouseArea.cursorShape = Qt.SizeBDiagCursor;
+                    else if(mouseX > root.width - step && mouseX <= root.width){
+                        // 九宫格中间第三列的三行
+                        if(mouseY <= step && mouseY > 0){
+                            mouseState = 7;
+                            rootMouseArea.cursorShape = Qt.SizeBDiagCursor;
+                        }
+                        else if(mouseY > step && mouseY < root.height - step){
+                            mouseState = 8;
+                            rootMouseArea.cursorShape = Qt.SizeHorCursor;
+                        }
+                        else if((mouseY >= (root.height - step)) && mouseY <= root.height){
+                            mouseState = 9;
+                            rootMouseArea.cursorShape = Qt.SizeFDiagCursor;
+                        }
                     }
                 }
-                else if(mouseX > step && mouseX <= root.width - step){
-                    // 九宫格中间第二列的三行
-                    if(mouseY < step && mouseY > 0){
-                        mouseState = 4;
-                        rootMouseArea.cursorShape = Qt.SizeVerCursor;
-                    }
-                    else if(mouseY >= step && mouseY < root.height - step){
-                        mouseState = 5;
-                        rootMouseArea.cursorShape = Qt.ArrowCursor;
-                    }
-                    else if(mouseY >= root.height - step && mouseY <= root.height){
-                        mouseState = 6;
-                        rootMouseArea.cursorShape = Qt.SizeVerCursor;
-                    }
-                }
-                else if(mouseX > root.width - step && mouseX <= root.width){
-                    // 九宫格中间第三列的三行
-                    if(mouseY <= step && mouseY > 0){
-                        mouseState = 7;
-                        rootMouseArea.cursorShape = Qt.SizeBDiagCursor;
-                    }
-                    else if(mouseY > step && mouseY < root.height - step){
-                        mouseState = 8;
-                        rootMouseArea.cursorShape = Qt.SizeHorCursor;
-                    }
-                    else if((mouseY >= (root.height - step)) && mouseY <= root.height){
-                        mouseState = 9;
-                        rootMouseArea.cursorShape = Qt.SizeFDiagCursor;
-                    }
-                }
-            }
-        */
+            */
             mouse.accepted = true;
         }
     }
@@ -214,7 +212,7 @@ ApplicationWindow {
                 // 类似计算方法;
                 width: root.width - 30 * root.hRatio;
                 height: 55 * root.vRatio;
-                source: "./image/title.png";
+                source: "qrc:/image/title.png";
                 fillMode: Image.Stretch;
                 anchors.left: parent.left;
                 anchors.top: parent.top;
@@ -225,9 +223,9 @@ ApplicationWindow {
                 id: logo;
                 width: root.width * (568 / 1920);
                 height: logo.width * (48 / 568);
-                source: "./image/logo.png";
+                source: "qrc:/image/logo.png";
                 fillMode: Image.Stretch;
-                anchors.left: parent.left;
+                anchors.left: titleImg.left
                 anchors.leftMargin: 27 * root.hRatio;
                 anchors.top: titleImg.top;
                 anchors.topMargin: 32 * ( root.height / root._height);
@@ -238,7 +236,7 @@ ApplicationWindow {
                 id: titlebar;
                 width: 76;
                 height: 20;
-                anchors.right: parent.right;
+                anchors.right: titleImg.right;
                 anchors.top: titleImg.top;
                 anchors.topMargin: 20 * root.vRatio;
                 color: "transparent";
@@ -264,7 +262,7 @@ ApplicationWindow {
                         radius: width / 2;
                         BorderImage {
                             anchors.fill: parent;
-                            source: "./image/close.png";
+                            source: "qrc:/image/close.png";
                         }
                     }
                 }
@@ -280,7 +278,7 @@ ApplicationWindow {
                         id: btnImage;
                         fillMode: Image.Stretch;
                         width: parent.width; height: parent.height;
-                        source: "./image/max.png";
+                        source: "qrc:/image/max.png";
                     }
                     background: Rectangle{
                         color: "transparent";
@@ -302,7 +300,7 @@ ApplicationWindow {
                         color: "transparent";
                         BorderImage {
                             anchors.fill: parent;
-                            source: "./image/min.png";
+                            source: "qrc:/image/min.png";
                         }
                     }
                     onClicked: root.visibility =  Window.Minimized;
@@ -338,7 +336,7 @@ ApplicationWindow {
                         radius: width / 2;
                         BorderImage {
                             anchors.fill: parent;
-                            source: "./image/display.png";
+                            source: "qrc:/image/display.png";
                         }
                     }
                     onClicked: {
@@ -359,7 +357,7 @@ ApplicationWindow {
                         radius: width / 2;
                         BorderImage {
                             anchors.fill: parent;
-                            source: "./image/com.png";
+                            source: "qrc:/image/com.png";
                         }
                     }
                     onClicked: {
@@ -380,7 +378,7 @@ ApplicationWindow {
                         radius: width / 2;
                         BorderImage {
                             anchors.fill: parent;
-                            source: "./image/modbus.png";
+                            source: "qrc:/image/modbus.png";
                         }
                     }
                     onClicked: {
@@ -401,7 +399,7 @@ ApplicationWindow {
                         radius: width / 2;
                         BorderImage {
                             anchors.fill: parent;
-                            source: "./image/read.png";
+                            source: "qrc:/image/read.png";
                         }
                     }
                     onClicked: {
@@ -422,7 +420,7 @@ ApplicationWindow {
                         radius: width / 2;
                         BorderImage {
                             anchors.fill: parent;
-                            source: "./image/write.png";
+                            source: "qrc:/image/write.png";
                         }
                     }
                     onClicked: {
@@ -439,23 +437,23 @@ ApplicationWindow {
 
                 Loader {
                     id: home;
-                    source: "./Home.qml";
+                    source: "qrc:/Home.qml"
                 }
                 Loader {
                     id: comConfig;
-                    source: "./ComConfig.qml";
+                    source: "qrc:/ComConfig.qml";
                 }
                 Loader {
                     id: modbusTest;
-                    source: "./ModbusTest.qml";
+                    source: "qrc:/ModbusTest.qml";
                 }
                 Loader {
                     id: readCmd;
-                    source: "./ReadCmd.qml";
+                    source: "qrc:/ReadCmd.qml";
                 }
                 Loader {
                     id: modifyCmd;
-                    source: "./ModifyCmd.qml";
+                    source: "qrc:/ModifyCmd.qml";
                 }
             }
 
@@ -467,16 +465,15 @@ ApplicationWindow {
         if(titlebar.isMax){
             root.visibility =  Window.Windowed;
             titlebar.isMax = false;
-            btnImage.source = "./image/max.png";
+            btnImage.source = "qrc:/image/max.png";
         }else{
             root.visibility =  Window.Maximized;
             titlebar.isMax = true;
-            btnImage.source = "./image/reset.png";
+            btnImage.source = "qrc:/image/reset.png";
         }
     }
 
     Component.onCompleted: {
         mainView.currentIndex = 0
     }
-
 }

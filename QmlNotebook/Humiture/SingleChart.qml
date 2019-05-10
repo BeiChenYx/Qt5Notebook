@@ -1,7 +1,8 @@
 import QtQuick 2.0
-import QtCharts 2.3
-import QtQuick.Controls 2.5
-import QtQuick.Layouts 1.12
+import QtCharts 2.0
+import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.4
+import an.qt.HandleHumiture 1.0
 
 /*
  * 使用 StackView 的方式切换曲线配置和曲线展示的页面,
@@ -11,6 +12,11 @@ import QtQuick.Layouts 1.12
 Rectangle {
     id: spline;
     color: "transparent";
+
+    HandleHumiture {
+        id: chartHanle;
+    }
+
     StackView {
         id: stackView;
         anchors.fill: parent;
@@ -58,7 +64,7 @@ Rectangle {
                 Layout.rowSpan: 1;
                 Layout.columnSpan: 1;
                 id: calendarSelect;
-                source: "./DateTimeEdit.qml"
+                source: "qrc:/DateTimeEdit.qml"
             }
             UButton {
                 id: control;
@@ -69,6 +75,9 @@ Rectangle {
                 text: "保存"
 
                 onClicked: {
+                    var deviceAddr = parseInt(addrComboBox.currentText);
+                    var date = calendarSelect.item.currentText;
+                    chartHanle.onQueryRecord(deviceAddr, date);
                     if(stackView.depth >= 1){
                         stackView.pop();
                     }
@@ -88,7 +97,7 @@ Rectangle {
                 background: Rectangle{
                     color: (leftBtn.hovered | leftBtn.pressed) ? "#42A1FA" : "transparent";
                     BorderImage {
-                        source: "./image/left.png"
+                        source: "qrc:/image/left.png"
                         anchors.fill: parent;
                     }
                 }
@@ -152,7 +161,7 @@ Rectangle {
                 background: Rectangle{
                     color: (rightBtn.hovered | rightBtn.pressed) ? "#42A1FA" : "transparent";
                     BorderImage {
-                        source: "./image/right.png"
+                        source: "qrc:/image/right.png"
                         anchors.fill: parent;
                     }
                 }

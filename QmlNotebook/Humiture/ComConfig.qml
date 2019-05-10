@@ -1,9 +1,15 @@
 import QtQuick 2.0
-import QtQuick.Controls 2.5
-import QtQuick.Layouts 1.12
+import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.4
+import an.qt.HandleHumiture 1.0
 
 Rectangle {
     color: "transparent";
+
+    HandleHumiture {
+        id: comHanle;
+    }
+
     GridLayout {
         rows: 5;
         columns: 5;
@@ -25,11 +31,14 @@ Rectangle {
             Layout.row: 1; Layout.column: 1;
             id: com;
             implicitWidth: 100;
+            model: ["COM1", "COM2", "COM3",
+                "COM4", "COM5", "COM6", "COM7",
+                "COM8", "COM9", "COM10", "COM11"]
         }
 
         ULabel {
             Layout.row: 2; Layout.column: 0;
-            text: "波特率";
+            text: "波特率"
         }
         UComboBox {
             Layout.row: 2; Layout.column: 1;
@@ -42,6 +51,16 @@ Rectangle {
             id: openClose;
             implicitWidth: 100;
             text: "打开";
+            onClicked: {
+                if(openClose.text == "打开"){
+                    var currentCom = com.currentText;
+                    var currentbaude = parseInt(baude.currentText);
+                    comHanle.onOpenCom(currentCom, currentbaude);
+                }else{
+                    comHanle.onCloseCom();
+                }
+
+            }
         }
 
         // 占坑
@@ -63,6 +82,7 @@ Rectangle {
             text: "波特率:";
         }
         ULabel{
+            id: baudrate;
             Layout.row: 1; Layout.column: 4;
         }
 
@@ -71,6 +91,7 @@ Rectangle {
             text: "停止位:";
         }
         ULabel {
+            id: stop;
             Layout.row: 2; Layout.column: 4;
         }
 
@@ -79,6 +100,7 @@ Rectangle {
             text: "校验位:";
         }
         ULabel {
+            id: paritybits;
             Layout.row: 3; Layout.column: 4;
         }
 
@@ -87,7 +109,23 @@ Rectangle {
             text: "数据位:";
         }
         ULabel {
+            id: data;
             Layout.row: 4; Layout.column: 4;
+        }
+    }
+
+    Connections {
+        target: comHanle;
+        onComOpenResult: {
+            console.log(baud, stopbits, parity, databits);
+            baudrate.text = baud.toString();
+            stop.text = stopbits.toString();
+            paritybits.text  = parity;
+            data.text = databits.toString();
+            openClose.text = "关闭";
+        }
+        onComCloseResult: {
+            openClose.text = "打开";
         }
     }
 }
