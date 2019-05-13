@@ -13,6 +13,7 @@ Rectangle {
     color: "transparent";
     implicitWidth: 500;
     implicitHeight: 400;
+    property int currentIndex: 1;
 //    property var dynamicObjects: new Array();
 
     SwipeView{
@@ -23,33 +24,40 @@ Rectangle {
     }
     Component.onCompleted: {
         // 初始化 SwipeView 根据底层设备个数，默认16个
-        for(var i = 0; i < 16; i++) {
-            var chartComponent = Qt.createComponent("qrc:/LineChart.qml");
-            if(chartComponent.status === Component.Ready){
-                var deviceChart = chartComponent.createObject(containerView)
-                deviceChart.initChart("设备地址为" + (i + 1) + "的温湿度曲线", i)
-                deviceChart.preView.connect(spline.onPreView);
-                deviceChart.nextView.connect(spline.onNextView);
-                containerView.addItem(deviceChart);
-//                dynamicObjects[i] = deviceChart;
-            }
-        }
-        containerView.setCurrentIndex(0);
+        // 直接在 SwipeView 中添加16个视图会导致缩放的过程很卡
+        // 因此采用添加一个就删除一个的方式
+        gerneratorChart(currentIndex);
     }
     function onPreView(index){
-        if(index <= 0){
+        if(index <= 1){
             return;
         }else{
-            containerView.setCurrentIndex(index - 1);
+            containerView.takeItem(0);
+            currentIndex -= 1;
+            gerneratorChart(currentIndex);
         }
 
     }
     function onNextView(index){
-        if(index >= 15){
+        if(index >= 16){
             return;
         }else{
-            containerView.setCurrentIndex(index + 1);
+            containerView.takeItem(0);
+            currentIndex += 1;
+            gerneratorChart(currentIndex);
         }
+    }
+    function gerneratorChart(index){
+        var chartComponent = Qt.createComponent("qrc:/LineChart.qml");
+        if(chartComponent.status === Component.Ready){
+            var deviceChart = chartComponent.createObject(containerView)
+            deviceChart.initChart("设备地址为" + index + "的温湿度曲线", index)
+            deviceChart.preView.connect(spline.onPreView);
+            deviceChart.nextView.connect(spline.onNextView);
+            containerView.addItem(deviceChart);
+            //                dynamicObjects[i] = deviceChart;
+        }
+        containerView.setCurrentIndex(0);
     }
 
 }

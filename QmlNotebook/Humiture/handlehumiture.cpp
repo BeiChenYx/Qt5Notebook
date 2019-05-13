@@ -3,7 +3,10 @@
 
 HandleHumiture::HandleHumiture(QObject *parent) : QObject(parent)
 {
+    timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &HandleHumiture::gerneratorHumiture);
 
+    timer->start(2000);
 }
 
 void HandleHumiture::onQueryRecord(int deviceAddr, QDate date)
@@ -46,4 +49,12 @@ void HandleHumiture::onModifyCmd(int deviceAddr, int registerAddr, int data)
 {
     qDebug() << "deviceAddr: " << deviceAddr << ", registerAddr: "
              << registerAddr << ", data: " << data;
+}
+
+void HandleHumiture::gerneratorHumiture()
+{
+    qsrand(static_cast<uint>(QTime(0, 0, 0).secsTo(QTime::currentTime())));
+    double temperature = qrand() % 40;
+    double humidity = qrand() % 40;
+    emit humitureData(temperature, humidity);
 }

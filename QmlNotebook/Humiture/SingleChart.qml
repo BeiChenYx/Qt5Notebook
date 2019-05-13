@@ -80,6 +80,10 @@ Rectangle {
                     chartHanle.onQueryRecord(deviceAddr, date);
                     if(stackView.depth >= 1){
                         stackView.pop();
+
+                        var x = Qt.formatDateTime(new Date(), "hh:mm:ss");
+                        temperatureSeries.append(x, 20);
+                        temperatureSeries.append(x, 25);
                     }
                 }
             }
@@ -144,11 +148,13 @@ Rectangle {
                     gridVisible: false;
                 }
                 LineSeries {
+                    id: temperatureSeries;
                     name: "温度";
                     axisX: axisXBottom;
                     axisY: axisYLeft;
                 }
                 LineSeries {
+                    id: humiditySeries;
                     name: "湿度";
                     axisX: axisXBottom;
                     axisYRight: axisYRight;
@@ -169,6 +175,17 @@ Rectangle {
                     stackView.push(configView);
                 }
             }
+        }
+    }
+
+    Connections {
+        target: chartHanle;
+        onHumitureData: {
+            var x = Qt.formatDateTime(new Date(), "hh:mm:ss");
+//            console.log("x: ", x, "temperature: ", temperature, "humidity: ", humidity);
+//            console.log("x: ", x, "humidity: ", humidity);
+//            temperatureSeries.append(x, temperature);
+//            humiditySeries.append(x, humidity);
         }
     }
 }

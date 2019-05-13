@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDate>
+#include <QTimer>
 
 /*
  * 暴露 C++ 对象给 QML, 对接后台处理线程
@@ -31,6 +32,9 @@ signals:
     // 4. 修改参数指令页面 响应的数据包
     void modifyCmd(QString data);
 
+    // 发送数据到页面
+    void humitureData(double temperature, double humidity);
+
 
 public slots:
     // 0. 主页 响应 单点测试查询历史记录 的功能
@@ -51,6 +55,11 @@ public slots:
     // 4. 修改参数指令页面
     void onModifyCmd(int deviceAddr, int registerAddr, int data);
 
+    // 模拟modbus生产数据
+    void gerneratorHumiture();
+
+private:
+    QTimer  *timer;
 };
 
 #endif // HANDLEHUMITURE_H
