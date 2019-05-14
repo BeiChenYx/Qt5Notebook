@@ -54,7 +54,8 @@ void HandleHumiture::onModifyCmd(int deviceAddr, int registerAddr, int data)
 void HandleHumiture::gerneratorHumiture()
 {
     qsrand(static_cast<uint>(QTime(0, 0, 0).secsTo(QTime::currentTime())));
-    double temperature = qrand() % 40;
-    double humidity = qrand() % 40;
+    int temperature = qrand() % 40;
+    int humidity = qrand() % 100;
+//    qDebug() << "temperature: " << temperature << "huimidity: " << humidity;
     emit humitureData(temperature, humidity);
 }

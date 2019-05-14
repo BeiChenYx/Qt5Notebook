@@ -80,10 +80,6 @@ Rectangle {
                     chartHanle.onQueryRecord(deviceAddr, date);
                     if(stackView.depth >= 1){
                         stackView.pop();
-
-                        var x = Qt.formatDateTime(new Date(), "hh:mm:ss");
-                        temperatureSeries.append(x, 20);
-                        temperatureSeries.append(x, 25);
                     }
                 }
             }
@@ -125,12 +121,21 @@ Rectangle {
                 DateTimeAxis{
                     id: axisXBottom;
                     format: "hh:mm:ss";
-                    min: Date.fromLocaleString(Qt.locale(), "00:00:00", "hh:mm:ss")
-                    max: Date.fromLocaleString(Qt.locale(), "23:59:59", "hh:mm:ss")
+                    min: {
+                        var date = new Date().toLocaleDateString(Qt.locale(),"yyyy-MM-dd");
+                        return Date.fromLocaleString(Qt.locale(), date + " 00:00:00", "yyyy-MM-dd hh:mm:ss");
+                    }
+
+                    max: {
+                        var date = new Date().toLocaleDateString(Qt.locale(),"yyyy-MM-dd");
+                        return Date.fromLocaleString(Qt.locale(), date + " 23:59:59", "yyyy-MM-dd hh:mm:ss");
+                    }
+
                     tickCount: 7;
                     labelsColor: "#59BAF2";
                     gridLineColor: "#4A5877";
                 }
+
                 ValueAxis{
                     id: axisYLeft;
                     min: -25;
@@ -175,17 +180,19 @@ Rectangle {
                     stackView.push(configView);
                 }
             }
+            Component.onCompleted: {
+                chartHanle.humitureData.connect(updateHumidity);
+            }
+            Component.onDestruction: {
+                chartHanle.humitureData.disconnect(updateHumidity);
+            }
+
+            function updateHumidity(temperature, humidity){
+                console.log(temperature, humidity, "date: ", new Date().toLocaleDateString(Qt.locale(),"yyyy-MM-dd"));
+                temperatureSeries.append(new Date().getTime(), temperature);
+                humiditySeries.append(new Date().getTime(), humidity);
+            }
         }
     }
 
-    Connections {
-        target: chartHanle;
-        onHumitureData: {
-            var x = Qt.formatDateTime(new Date(), "hh:mm:ss");
-//            console.log("x: ", x, "temperature: ", temperature, "humidity: ", humidity);
-//            console.log("x: ", x, "humidity: ", humidity);
-//            temperatureSeries.append(x, temperature);
-//            humiditySeries.append(x, humidity);
-        }
-    }
 }

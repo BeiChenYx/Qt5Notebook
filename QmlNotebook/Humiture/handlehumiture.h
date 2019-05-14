@@ -33,7 +33,8 @@ signals:
     void modifyCmd(QString data);
 
     // 发送数据到页面
-    void humitureData(double temperature, double humidity);
+//    void humitureData(double temperature, double humidity);
+    void humitureData(int temperature, int humidity);
 
 
 public slots:
