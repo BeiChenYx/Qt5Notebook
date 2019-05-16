@@ -62,6 +62,8 @@ Rectangle {
     Component.onCompleted: {
         blueColor.colorPicked.connect(setTextColor);
         pinkColor.colorPicked.connect(setTextColor);
+        redColor.configureBorder("redColor")
+        blueColor.configureBorder("blueColor")
     }
 }
 

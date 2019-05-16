@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ComConfig.qml</file>
+        <file>DateTimeEdit.qml</file>
+        <file>DoubleChart.qml</file>
+        <file>Home.qml</file>
+        <file>LineChart.qml</file>
+        <file>main.qml</file>
+        <file>ModbusTest.qml</file>
+        <file>ModifyCmd.qml</file>
+        <file>ReadCmd.qml</file>
+        <file>SingleChart.qml</file>
+        <file>UButton.qml</file>
+        <file>UComboBox.qml</file>
+        <file>ULabel.qml</file>
+        <file>UTextField.qml</file>
+    </qresource>
+</RCC>

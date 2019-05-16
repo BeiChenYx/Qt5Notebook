@@ -6,9 +6,10 @@ Rectangle {
     height: 30;
     signal colorPicked(color clr);
 
-    function configureBorder() {
+    function configureBorder(colorId) {
         colorPicker.border.width = colorPicker.focus ? 2 : 0;
         colorPicker.border.color = colorPicker.focus ? "#90D750" : "#808080";
+        console.log("call configureBorder: ", colorId);
     }
 
     MouseArea {

@@ -72,4 +72,7 @@ Rectangle {
             }
         }
     }
+    Component.onCompleted: {
+        blueLoader.item.configureBorder("blueLoader")
+    }
 }

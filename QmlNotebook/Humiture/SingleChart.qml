@@ -187,8 +187,9 @@ Rectangle {
                 chartHanle.humitureData.disconnect(updateHumidity);
             }
 
-            function updateHumidity(temperature, humidity){
-                console.log(temperature, humidity, "date: ", new Date().toLocaleDateString(Qt.locale(),"yyyy-MM-dd"));
+            function updateHumidity(temperature, humidity, dateTime, deviceAddr){
+//                console.log(temperature, humidity, "date: ", new Date().toLocaleDateString(Qt.locale(),"yyyy-MM-dd"));
+                console.log(temperature, " ", humidity, " ", dateTime, " ", deviceAddr);
                 temperatureSeries.append(new Date().getTime(), temperature);
                 humiditySeries.append(new Date().getTime(), humidity);
             }

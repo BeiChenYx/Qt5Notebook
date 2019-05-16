@@ -1,0 +1,199 @@
+import QtQuick 2.0
+import QtCharts 2.0
+import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.4
+import an.qt.RealHumiture 1.0
+
+/*
+ * 使用 StackView 的方式切换曲线配置和曲线展示的页面,
+ * 曲线的配置主要有 设备选择 和 日期选择，日期如果为当前日期
+ * 则显示当前实时数据，如果是历史日期，则从数据库中获取历史数据；
+ */
+Rectangle {
+    id: spline;
+    color: "transparent";
+    property int currentDeviceAddr: 1;
+
+    RealHumiture {
+        id: singleHandle;
+    }
+
+    StackView {
+        id: stackView;
+        anchors.fill: parent;
+        initialItem: singleChart;
+        clip: true;
+    }
+
+    Component {
+        id: configView;
+        GridLayout {
+            rows: 3;
+            columns: 2;
+            rowSpacing: 10;
+            columnSpacing: 5;
+
+            width: 100;
+            height: 100;
+            Label {
+                width: 20;
+                Layout.rowSpan: 1;
+                Layout.columnSpan: 1;
+                Layout.leftMargin: 40;
+                Layout.topMargin: 25;
+                color: "#59BAF2";
+                text: "从机地址:";
+            }
+            UComboBox {
+                id: addrComboBox
+                Layout.topMargin: 25;
+                Layout.rowSpan: 1;
+                Layout.columnSpan: 1;
+                implicitWidth: 80;
+                model: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+            }
+
+            Label {
+                Layout.leftMargin: 40;
+                width: 20;
+                Layout.rowSpan: 1;
+                Layout.columnSpan: 1;
+                text: "图表日期:";
+                color: "#59BAF2";
+            }
+            Loader {
+                Layout.rowSpan: 1;
+                Layout.columnSpan: 1;
+                id: calendarSelect;
+                source: "qrc:/DateTimeEdit.qml"
+            }
+            UButton {
+                id: control;
+                Layout.rowSpan: 1;
+                Layout.columnSpan: 1;
+                Layout.column: 1;
+                Layout.row: 2;
+                text: "保存"
+
+                onClicked: {
+                    var deviceAddr = parseInt(addrComboBox.currentText);
+                    var date = calendarSelect.item.currentText;
+                    chartHanle.onQueryRecord(deviceAddr, date);
+                    if(stackView.depth >= 1){
+                        stackView.pop();
+                    }
+                }
+            }
+        }
+    }
+
+    Component {
+        id: singleChart;
+        objectName: singleObjects;
+        // 单点测试图表
+        RowLayout {
+            Button {
+                id: leftBtn;
+                implicitWidth: 20;
+                implicitHeight: 20;
+                background: Rectangle{
+                    color: (leftBtn.hovered | leftBtn.pressed) ? "#42A1FA" : "transparent";
+                    BorderImage {
+                        source: "qrc:/image/left.png"
+                        anchors.fill: parent;
+                    }
+                }
+            }
+            ChartView {
+                implicitWidth: parent.width - leftBtn.width - rightBtn.width - 10;
+                implicitHeight: parent.height;
+                antialiasing: true;
+                backgroundColor: "transparent";
+                legend.alignment: Qt.AlignRight;
+                legend.labelColor: "#59BAF2";
+                legend.font.pixelSize: 11;
+                legend.markerShape: Legend.MarkerShapeFromSeries;
+                margins.top: 0;
+                margins.bottom: 0;
+                margins.left: 0;
+                margins.right: 0;
+                title: "设备地址为1的温湿度曲线"
+                titleColor: "#59BAF2";
+
+                DateTimeAxis{
+                    id: axisXBottom;
+                    format: "hh:mm:ss";
+                    min: {
+                        var date = new Date().toLocaleDateString(Qt.locale(),"yyyy-MM-dd");
+                        return Date.fromLocaleString(Qt.locale(), date + " 00:00:00", "yyyy-MM-dd hh:mm:ss");
+                    }
+
+                    max: {
+                        var date = new Date().toLocaleDateString(Qt.locale(),"yyyy-MM-dd");
+                        return Date.fromLocaleString(Qt.locale(), date + " 23:59:59", "yyyy-MM-dd hh:mm:ss");
+                    }
+
+                    tickCount: 7;
+                    labelsColor: "#59BAF2";
+                    gridLineColor: "#4A5877";
+                }
+                ValueAxis{
+                    id: axisYLeft;
+                    min: -25;
+                    max: 45;
+                    tickCount: 5;
+                    labelsColor: "#59BAF2";
+                    gridLineColor: "#4A5877";
+                }
+                ValueAxis{
+                    id: axisYRight;
+                    min: 0;
+                    max: 100;
+                    tickCount: 5;
+                    labelsColor: "#59BAF2";
+                    gridVisible: false;
+                }
+                LineSeries {
+                    name: "温度";
+                    axisX: axisXBottom;
+                    axisY: axisYLeft;
+                }
+                LineSeries {
+                    name: "湿度";
+                    axisX: axisXBottom;
+                    axisYRight: axisYRight;
+                }
+            }
+            Button {
+                id: rightBtn;
+                implicitWidth: 20;
+                implicitHeight: 20;
+                background: Rectangle{
+                    color: (rightBtn.hovered | rightBtn.pressed) ? "#42A1FA" : "transparent";
+                    BorderImage {
+                        source: "qrc:/image/right.png"
+                        anchors.fill: parent;
+                    }
+                }
+                onClicked: {
+                    stackView.push(configView);
+                }
+            }
+            Component.onCompleted: {
+                singleHandle.humiture.connect(updateHumidity);
+            }
+            Component.onDestruction: {
+                singleHandle.humiture.disconnect(updateHumidity);
+            }
+
+            function updateHumidity(deviceAddr, dateTime, temperature, humidity){
+                console.log(deviceAddr, dateTime, temperature, humidity);
+                if(deviceAddr === currentDeviceAddr){
+                    temperatureSeries.append(dateTime, temperature);
+                    humiditySeries.append(dateTime, humidity);
+                }
+            }
+        }
+    }
+
+}

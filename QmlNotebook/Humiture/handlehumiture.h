@@ -34,7 +34,7 @@ signals:
 
     // 发送数据到页面
 //    void humitureData(double temperature, double humidity);
-    void humitureData(int temperature, int humidity);
+    void humitureData(double temperature, double humidity, qint64 dateTime, int deviceAddr);
 
 
 public slots:
