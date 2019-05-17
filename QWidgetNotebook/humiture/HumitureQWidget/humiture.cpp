@@ -6,6 +6,7 @@ Humiture::Humiture(QWidget *parent) :
     ui(new Ui::Humiture)
 {
     ui->setupUi(this);
+
 }
 
 Humiture::~Humiture()
