@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>image/background.jpg</file>
+        <file>image/close.png</file>
+        <file>image/com.png</file>
+        <file>image/display.png</file>
+        <file>image/double.png</file>
+        <file>image/left.png</file>
+        <file>image/logo.png</file>
+        <file>image/max.png</file>
+        <file>image/min.png</file>
+        <file>image/modbus.png</file>
+        <file>image/read.png</file>
+        <file>image/reset.png</file>
+        <file>image/right.png</file>
+        <file>image/single.png</file>
+        <file>image/title.png</file>
+        <file>image/write.png</file>
+    </qresource>
+</RCC>

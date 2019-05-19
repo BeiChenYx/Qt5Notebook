@@ -25,14 +25,38 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        comconfig.cpp \
+        doubledisplay.cpp \
+        home.cpp \
         main.cpp \
-        humiture.cpp
+        humiture.cpp \
+        modbustest.cpp \
+        modifycmd.cpp \
+        readcmd.cpp \
+        singleconfig.cpp \
+        singledisplay.cpp
 
 HEADERS += \
-        humiture.h
+        comconfig.h \
+        doubledisplay.h \
+        home.h \
+        humiture.h \
+        modbustest.h \
+        modifycmd.h \
+        readcmd.h \
+        singleconfig.h \
+        singledisplay.h
 
 FORMS += \
-        humiture.ui
+        comconfig.ui \
+        doubledisplay.ui \
+        home.ui \
+        humiture.ui \
+        modbustest.ui \
+        modifycmd.ui \
+        readcmd.ui \
+        singleconfig.ui \
+        singledisplay.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

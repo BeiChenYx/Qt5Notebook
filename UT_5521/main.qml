@@ -6,7 +6,7 @@ import QtQuick.Layouts 1.4
 ApplicationWindow {
     id: root;
     visible: true;
-    width: 960; height: 540;
+
     property int _width: 960;
     property int _height: 540;
     property double hRatio: width / _width;
