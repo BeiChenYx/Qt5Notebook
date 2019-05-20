@@ -35,6 +35,7 @@ SOURCES += \
         comconfig.cpp \
         doubledisplay.cpp \
         home.cpp \
+        humiturecharts.cpp \
         main.cpp \
         humiture.cpp \
         modbustest.cpp \
@@ -57,6 +58,7 @@ HEADERS += \
         doubledisplay.h \
         home.h \
         humiture.h \
+        humiturecharts.h \
         modbustest.h \
         modifycmd.h \
         readcmd.h \

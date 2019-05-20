@@ -2,6 +2,8 @@
 #define SINGLEDISPLAY_H
 
 #include <QWidget>
+#include <QHBoxLayout>
+#include "humiturecharts.h"
 
 namespace Ui {
 class SingleDisplay;
@@ -17,6 +19,8 @@ public:
 
 private:
     Ui::SingleDisplay *ui;
+
+    HumitureCharts  *pHumitureCharts;
 };
 
 #endif // SINGLEDISPLAY_H
