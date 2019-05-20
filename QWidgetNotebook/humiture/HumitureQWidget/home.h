@@ -40,7 +40,9 @@ private:
 
     // 两个页面当前的索引
     int             singleCurrentIndex;
+    int             singleCounts;
     int             doubleCurrentIndex;
+    int             doubleCounts;
 };
 
 #endif // HOME_H
