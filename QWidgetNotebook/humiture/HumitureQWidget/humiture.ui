@@ -23,7 +23,7 @@
    <string>Humiture</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget#Humiture {
+   <string notr="true">#Humiture {
 	border-image: url(:/image/background.jpg);
 }
 
@@ -36,9 +36,55 @@ QLabel#label_logo {
 }
 
 QPushButton{
+	padding: 10px 10px;
 	background-color: rgba(255, 255, 255, 0);
-	border: none;
-}</string>
+	border: 1px solid #3270E1;
+	color: &quot;#17a81a&quot;;
+}
+QPushButton:pressed{
+	padding: 10px 10px;
+	color: &quot;#59BAF2&quot;;
+	border: 1px solid #3270E1;
+	background-color: rgba(255, 255, 255, 0);
+}
+QPushButton:hover{
+	padding: 10px 10px;	
+	border: 1px solid #59BAF2;
+}
+QLabel {
+	color: &quot;#59BAF2&quot;;
+}
+QLineEdit {
+    border: 1px solid #3270E1;
+    padding: 0 5px;
+    background-color: rgba(255, 255, 255, 0);
+	color: &quot;#59BAF2&quot;;
+    selection-background-color: #3270E1;
+}
+
+QComboBox {
+    border: 1px solid #3270E1;
+    padding: 5px 5px;
+    min-width: 6em;
+	color: &quot;#59BAF2&quot;;
+	background-color: rgba(255, 255, 255, 0);
+}
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+    color: &quot;#59BAF2&quot;;
+}
+/* 下拉列表里的颜色 */
+QComboBox QAbstractItemView::item {
+    border: 1px solid #00153c;
+	color: &quot;#59BAF2&quot;;
+	background-color: #00153c;
+    selection-background-color: #3270E1;
+	height: 30px;
+}
+
+</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">

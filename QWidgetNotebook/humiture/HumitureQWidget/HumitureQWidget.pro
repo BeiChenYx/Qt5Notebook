@@ -4,7 +4,9 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui sql charts
+CONFIG += c++11
+LIBS += -lpthread libwsock32 libws2_32
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,6 +27,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+        IM_modbus.cpp \
+        Libmodbus/modbus-data.c \
+        Libmodbus/modbus-rtu.c \
+        Libmodbus/modbus-tcp.c \
+        Libmodbus/modbus.c \
         comconfig.cpp \
         doubledisplay.cpp \
         home.cpp \
@@ -37,6 +44,15 @@ SOURCES += \
         singledisplay.cpp
 
 HEADERS += \
+        IM_modbus.h \
+        Libmodbus/config.h \
+        Libmodbus/modbus-private.h \
+        Libmodbus/modbus-rtu-private.h \
+        Libmodbus/modbus-rtu.h \
+        Libmodbus/modbus-tcp-private.h \
+        Libmodbus/modbus-tcp.h \
+        Libmodbus/modbus-version.h \
+        Libmodbus/modbus.h \
         comconfig.h \
         doubledisplay.h \
         home.h \

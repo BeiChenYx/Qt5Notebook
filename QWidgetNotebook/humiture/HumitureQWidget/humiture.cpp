@@ -8,6 +8,7 @@ Humiture::Humiture(QWidget *parent) :
 {
     ui->setupUi(this);
     this->initUI();
+    this->initConnections();
 
 }
 
@@ -18,15 +19,14 @@ Humiture::~Humiture()
 
 void Humiture::initUI()
 {
-//    this->resize(960, 540);
-    this->resize(1366, 768);
+    this->resize(960, 540);
+//    this->resize(1366, 768);
     this->setWindowFlag(Qt::FramelessWindowHint);
     this->windowStatus = WindowStatus::NORMAL;
     this->isPressed = false;
     this->stretchState = WindowStretchRectState::NO_SELECT;
     // 开启鼠标跟踪
     this->setMouseTracking(true);
-
     this->pHome = new Home(this);
     this->pComConfig = new ComConfig(this);
     this->pModbusTest = new ModbusTest(this);
@@ -39,8 +39,64 @@ void Humiture::initUI()
     ui->stackedWidget->insertWidget(4, this->pModifyCmd);
     ui->stackedWidget->setCurrentIndex(0);
 
+    this->pWorkThread = new WorkThread();
+    this->pWorkThread->start();
 }
 
+void Humiture::initConnections()
+{
+    // 工作线程工作结果的信号槽
+    connect(this->pWorkThread, SIGNAL(openResult(bool, QVariant)),
+            this->pComConfig, SLOT(onOpenResult(bool, QVariant)));
+    connect(this->pWorkThread, SIGNAL(closeResult()),
+            this->pComConfig, SLOT(onExitResult()));
+    connect(this->pWorkThread, SIGNAL(homeResult(QVariant)),
+            this, SLOT(onHomeResult(QVariant)));
+    connect(this->pWorkThread, SIGNAL(modbusTestResult(QVariant)),
+            this->pModbusTest, SLOT(onModbusTestResult(QVariant)));
+    connect(this->pWorkThread, SIGNAL(readCmdResult(QVariant)),
+            this->pReadCmd, SLOT(onReadCmdResult(QVariant)));
+    connect(this->pWorkThread, SIGNAL(modifyCmdResult(QVariant)),
+            this->pModifyCmd, SLOT(onModifyCmdResult(QVariant)));
+    connect(this->pWorkThread, SIGNAL(recordResult(QVariant)),
+            this, SLOT(onRecordResult(QVariant)));
+    connect(this->pWorkThread, SIGNAL(exitModbus()),
+            this, SLOT(onExitModbus()));
+
+    // 其他页面通信的信号槽
+    connect(this->pComConfig, SIGNAL(openCom(QVariant)),
+            this, SLOT(onTask(QVariant)));
+    connect(this->pComConfig, SIGNAL(closeCom(QVariant)),
+            this, SLOT(onTask(QVariant)));
+    connect(this->pModbusTest, SIGNAL(readHumiture(QVariant)),
+            this, SLOT(onTask(QVariant)));
+    connect(this->pReadCmd, SIGNAL(readCmd(QVariant)),
+            this, SLOT(onTask(QVariant)));
+    connect(this->pModifyCmd, SIGNAL(modifyCmd(QVariant)),
+            this, SLOT(onTask(QVariant)));
+}
+
+void Humiture::closeEvent(QCloseEvent *event)
+{
+    if(this->pWorkThread->isRunning()){
+        Task task;
+        task.task_type = Task::TaskType::Exit_Thread;
+        this->pWorkThread->pushToTask(task);
+        this->pWorkThread->quit();
+        this->pWorkThread->wait(1);
+    }
+    QWidget::closeEvent(event);
+}
+
+void Humiture::paintEvent(QPaintEvent *event)
+{
+    // 重绘事件保证 QWidget 样式表有效
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+    QWidget::paintEvent(event);
+}
 
 void Humiture::resizeEvent(QResizeEvent *e)
 {
@@ -272,4 +328,44 @@ void Humiture::on_pushButton_readCmd_clicked()
 void Humiture::on_pushButton_modifyCmd_clicked()
 {
     ui->stackedWidget->setCurrentIndex(4);
+}
+
+
+//void Humiture::onOpenResult(bool result, QVariant msg)
+//{
+
+//}
+//void Humiture::onCloseResult()
+//{
+
+//}
+void Humiture::onHomeResult(QVariant msg)
+{
+
+}
+//void Humiture::onModbusTestResult(QVariant msg)
+//{
+
+//}
+//void Humiture::onReadCmdResult(QVariant msg)
+//{
+
+//}
+//void Humiture::onModifyCmdResult(QVariant msg)
+//{
+
+//}
+void Humiture::onRecordResult(QVariant msg)
+{
+
+}
+void Humiture::onExitModbus()
+{
+
+}
+
+void Humiture::onTask(QVariant msg)
+{
+    Task value = msg.value<Task>();
+    this->pWorkThread->pushToTask(value);
 }

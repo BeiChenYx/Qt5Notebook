@@ -33,6 +33,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="spacing">
+        <number>10</number>
+       </property>
        <item>
         <widget class="QLabel" name="label">
          <property name="text">
@@ -93,12 +96,12 @@
       </spacer>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,4">
        <property name="spacing">
-        <number>10</number>
+        <number>5</number>
        </property>
        <item>
-        <widget class="QLabel" name="label_4">
+        <widget class="QLabel" name="label_com_status">
          <property name="text">
           <string>串口状态:</string>
          </property>

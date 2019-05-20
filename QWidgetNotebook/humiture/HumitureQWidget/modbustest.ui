@@ -26,13 +26,16 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <property name="spacing">
-    <number>0</number>
+   <property name="horizontalSpacing">
+    <number>5</number>
+   </property>
+   <property name="verticalSpacing">
+    <number>10</number>
    </property>
    <item row="0" column="0">
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="1,3,1,3">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <property name="spacing">
-      <number>0</number>
+      <number>10</number>
      </property>
      <item>
       <widget class="QLabel" name="label">
@@ -43,9 +46,6 @@
      </item>
      <item>
       <layout class="QGridLayout" name="gridLayout">
-       <property name="horizontalSpacing">
-        <number>5</number>
-       </property>
        <property name="verticalSpacing">
         <number>10</number>
        </property>
@@ -67,26 +67,13 @@
         </widget>
        </item>
        <item row="0" column="2">
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="3" colspan="2">
         <widget class="QLabel" name="label_5">
          <property name="text">
           <string>反馈温度(%RH):</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="5">
+       <item row="0" column="3">
         <widget class="QLineEdit" name="lineEdit_H">
          <property name="readOnly">
           <bool>true</bool>
@@ -104,26 +91,13 @@
         <widget class="QLineEdit" name="lineEdit_deviceAddr"/>
        </item>
        <item row="1" column="2">
-        <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="1" column="3">
         <widget class="QLabel" name="label_6">
          <property name="text">
           <string>寄存器地址:</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="4" colspan="2">
+       <item row="1" column="3">
         <widget class="QLineEdit" name="lineEdit_registerAddr"/>
        </item>
        <item row="2" column="0">
@@ -136,38 +110,29 @@
        <item row="2" column="1">
         <widget class="QLineEdit" name="lineEdit_registerLen"/>
        </item>
-       <item row="2" column="3">
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="2" column="4" colspan="2">
-        <widget class="QPushButton" name="pushButton_Read">
-         <property name="text">
-          <string>读取</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="2">
-        <spacer name="horizontalSpacer_6">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
+       <item row="2" column="2" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <spacer name="horizontalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_Read">
+           <property name="text">
+            <string>读取</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
@@ -180,9 +145,6 @@
      </item>
      <item>
       <layout class="QGridLayout" name="gridLayout_2">
-       <property name="horizontalSpacing">
-        <number>5</number>
-       </property>
        <property name="verticalSpacing">
         <number>10</number>
        </property>
@@ -197,26 +159,13 @@
         <widget class="QLineEdit" name="lineEdit_startAddr"/>
        </item>
        <item row="0" column="2">
-        <spacer name="horizontalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="3">
         <widget class="QLabel" name="label_11">
          <property name="text">
           <string>结束地址:</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="4">
+       <item row="0" column="3">
         <widget class="QLineEdit" name="lineEdit_endAddr"/>
        </item>
        <item row="1" column="0">
@@ -226,7 +175,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1" colspan="4">
+       <item row="1" column="1" colspan="3">
         <widget class="QLineEdit" name="lineEdit_send"/>
        </item>
        <item row="2" column="0">
@@ -236,7 +185,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1" colspan="4">
+       <item row="2" column="1" colspan="3">
         <widget class="QLineEdit" name="lineEdit_fb"/>
        </item>
        <item row="3" column="0">
@@ -249,25 +198,29 @@
        <item row="3" column="1">
         <widget class="QLineEdit" name="lineEdit_times"/>
        </item>
-       <item row="3" column="2">
-        <spacer name="horizontalSpacer_5">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="3" column="4">
-        <widget class="QPushButton" name="pushButton_times">
-         <property name="text">
-          <string>连续读取</string>
-         </property>
-        </widget>
+       <item row="3" column="2" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <spacer name="horizontalSpacer_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_times">
+           <property name="text">
+            <string>连续读取</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>

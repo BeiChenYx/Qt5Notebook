@@ -5,12 +5,15 @@
 #include <QMouseEvent>
 #include <QShowEvent>
 #include <QRect>
+#include <QPainter>
+#include <QStyleOption>
 
 #include "home.h"
 #include "comconfig.h"
 #include "modbustest.h"
 #include "readcmd.h"
 #include "modifycmd.h"
+#include "IM_modbus.h"
 
 namespace Ui {
 class Humiture;
@@ -53,6 +56,8 @@ public:
     virtual void mouseMoveEvent(QMouseEvent *event);
     virtual void mouseReleaseEvent(QMouseEvent *event);
     virtual void showEvent(QShowEvent *event);
+    virtual void paintEvent(QPaintEvent *event);
+    virtual void closeEvent(QCloseEvent *event);
 
     // 计算拉伸的 8 个位置的Rect
     void calculateMarginsRect();
@@ -67,20 +72,27 @@ public:
 
 private slots:
     void on_pushButton_min_clicked();
-
     void on_pushButton_max_clicked();
-
     void on_pushButton_close_clicked();
 
     void on_pushButton_home_clicked();
-
     void on_pushButton_comSet_clicked();
-
     void on_pushButton_Modbus_clicked();
-
     void on_pushButton_readCmd_clicked();
-
     void on_pushButton_modifyCmd_clicked();
+
+    // 工作线程的结果信号对应的槽
+//    void onOpenResult(bool result, QVariant msg);
+//    void onCloseResult();
+    void onHomeResult(QVariant msg);
+//    void onModbusTestResult(QVariant msg);
+//    void onReadCmdResult(QVariant msg);
+//    void onModifyCmdResult(QVariant msg);
+    void onRecordResult(QVariant msg);
+    void onExitModbus();
+
+    // 其他页面发过来的任务，需要通过工作线程的接口发布任务
+    void onTask(QVariant msg);
 
 private:
     Ui::Humiture *ui;
@@ -112,6 +124,8 @@ private:
     ReadCmd                 *pReadCmd;
     ModifyCmd               *pModifyCmd;
 
+    // 工作线程, 主要是 modbus 通信
+    WorkThread              *pWorkThread;
 };
 
 #endif // HUMITURE_H

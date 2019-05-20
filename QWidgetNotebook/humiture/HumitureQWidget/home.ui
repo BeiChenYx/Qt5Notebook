@@ -14,7 +14,29 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: rgba(255, 255, 255, 0);</string>
+   <string notr="true">#Home {
+	background-color: rgba(255, 255, 255, 0);
+}
+#pushButton_single_left,
+#pushButton_single_right,
+#pushButton_double_left,
+#pushButton_double_right{
+	background-color: rgba(255, 255, 255, 0);
+	color: &quot;#17a81a&quot;;
+}
+#pushButton_single_left:pressed,
+#pushButton_single_right:pressed,
+#pushButton_double_left:pressed,
+#pushButton_double_right:pressed{
+	color: &quot;#59BAF2&quot;;
+	background-color: rgba(255, 255, 255, 0);
+}
+#pushButton_single_left:hover,
+#pushButton_single_right:hover,
+#pushButton_double_left:hover,
+#pushButton_double_right:hover{
+	background-color: #59BAF2;
+}</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1">
    <property name="spacing">
@@ -44,6 +66,12 @@
        </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>16</width>
+         <height>16</height>
+        </size>
        </property>
       </widget>
      </item>
