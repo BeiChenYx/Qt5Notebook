@@ -707,7 +707,7 @@ void WorkThread::run()
                 int re = this->handleReadRquest(pDevice, task, isRecord);
                 if(re > 0){
                     if(task.m_page == 0){
-                        handleInsertRecord(task);
+//                        handleInsertRecord(task);
                     }
                 }
                 QThread::msleep(100);

@@ -24,6 +24,10 @@ class HumitureCharts : public QWidget
 public:
     explicit HumitureCharts(QWidget *parent = nullptr);
 
+    virtual void setBackground(QString url);
+    virtual void setChartTile(QString title);
+    virtual QLineSeries* createLineSerie(QString title, bool isT=false, QString color="");
+
 signals:
 
 public slots:

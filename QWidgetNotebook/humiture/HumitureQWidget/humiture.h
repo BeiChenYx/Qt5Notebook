@@ -82,17 +82,15 @@ private slots:
     void on_pushButton_modifyCmd_clicked();
 
     // 工作线程的结果信号对应的槽
-//    void onOpenResult(bool result, QVariant msg);
-//    void onCloseResult();
     void onHomeResult(QVariant msg);
-//    void onModbusTestResult(QVariant msg);
-//    void onReadCmdResult(QVariant msg);
-//    void onModifyCmdResult(QVariant msg);
     void onRecordResult(QVariant msg);
     void onExitModbus();
 
     // 其他页面发过来的任务，需要通过工作线程的接口发布任务
     void onTask(QVariant msg);
+
+    // 更改单点测试
+    void onSingleCurrentAddr(int addr);
 
 private:
     Ui::Humiture *ui;
@@ -126,6 +124,9 @@ private:
 
     // 工作线程, 主要是 modbus 通信
     WorkThread              *pWorkThread;
+
+    // 单点测试当前展示的设备
+    int                     singleCurrentAddr;
 };
 
 #endif // HUMITURE_H

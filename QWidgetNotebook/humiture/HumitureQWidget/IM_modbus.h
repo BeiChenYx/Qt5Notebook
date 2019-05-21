@@ -36,7 +36,8 @@
 //#include "handlerecord.h"
 
 extern int errno;
-const int DEVICE_MAX_COUNT = 3;
+// 全局变量存在问题...comConfig中定义了一个
+const int DEVICE_MAX_COUNT = 10;
 // 在线设备间隔检查时间 单位: 分钟
 const int DEVICE_CHECK_ONLINE_TIME = 5;
 // modbus 通信最长等待时间, 单位: 秒

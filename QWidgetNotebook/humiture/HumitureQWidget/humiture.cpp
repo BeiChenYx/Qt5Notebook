@@ -7,6 +7,7 @@ Humiture::Humiture(QWidget *parent) :
     ui(new Ui::Humiture)
 {
     ui->setupUi(this);
+    this->singleCurrentAddr = 1;
     this->initUI();
     this->initConnections();
 
@@ -68,12 +69,17 @@ void Humiture::initConnections()
             this, SLOT(onTask(QVariant)));
     connect(this->pComConfig, SIGNAL(closeCom(QVariant)),
             this, SLOT(onTask(QVariant)));
+    connect(this->pComConfig, SIGNAL(readHumiture(QVariant)),
+            this, SLOT(onTask(QVariant)));
     connect(this->pModbusTest, SIGNAL(readHumiture(QVariant)),
             this, SLOT(onTask(QVariant)));
     connect(this->pReadCmd, SIGNAL(readCmd(QVariant)),
             this, SLOT(onTask(QVariant)));
     connect(this->pModifyCmd, SIGNAL(modifyCmd(QVariant)),
             this, SLOT(onTask(QVariant)));
+
+    connect(this->pHome, SIGNAL(singleCurrentAddr(int)),
+            this, SLOT(onSingleCurrentAddr(int)));
 }
 
 void Humiture::closeEvent(QCloseEvent *event)
@@ -330,31 +336,24 @@ void Humiture::on_pushButton_modifyCmd_clicked()
     ui->stackedWidget->setCurrentIndex(4);
 }
 
-
-//void Humiture::onOpenResult(bool result, QVariant msg)
-//{
-
-//}
-//void Humiture::onCloseResult()
-//{
-
-//}
 void Humiture::onHomeResult(QVariant msg)
 {
-
+    Task value = msg.value<Task>();
+    uint16_t temperatureInt = value.ReadHolding.at(0);
+    uint16_t humidityInt = value.ReadHolding.at(1);
+    double temperature = (temperatureInt - 4000) / 100.00;
+    double humidity = humidityInt / 100.00;
+    if(value.m_deviceAddr == this->singleCurrentAddr){
+        this->pHome->onSingleHumidity(value.m_deviceAddr, temperature, humidity);
+    }
+    this->pHome->onDoubleHumidity(value.m_deviceAddr, temperature, humidity);
 }
-//void Humiture::onModbusTestResult(QVariant msg)
-//{
 
-//}
-//void Humiture::onReadCmdResult(QVariant msg)
-//{
+void Humiture::onSingleCurrentAddr(int addr)
+{
+    this->singleCurrentAddr = addr;
+}
 
-//}
-//void Humiture::onModifyCmdResult(QVariant msg)
-//{
-
-//}
 void Humiture::onRecordResult(QVariant msg)
 {
 

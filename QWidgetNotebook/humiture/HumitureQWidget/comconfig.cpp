@@ -8,13 +8,17 @@ ComConfig::ComConfig(QWidget *parent) :
     ui->setupUi(this);
     // 自定义 ComboBox 的样式
     ui->comboBox_com->setView(new QListView);
-    for(int i = 1; i < 16; i++){
+    for(int i = 1; i < 10; i++){
         ui->comboBox_com->addItem(QString("COM%1").arg(i));
     }
     ui->comboBox_baud->setView(new QListView);
     QStringList bauds;
     bauds << "1200" << "2400" << "4800" << "9600" << "19200";
     ui->comboBox_baud->addItems(bauds);
+
+    this->homeTimer = new QTimer(this);
+    connect(this->homeTimer, &QTimer::timeout, this,
+               &ComConfig::timesReadHumiture);
 }
 
 ComConfig::~ComConfig()
@@ -60,6 +64,7 @@ void ComConfig::onOpenResult(bool result, QVariant msg)
         ui->label_paritybits->setText(QString("%1").arg(value.rtuModbusInfo.m_parity));
         ui->label_databits->setText(QString("%1").arg(value.rtuModbusInfo.m_databits));
         ui->label_com_status->setText("串口状态: 已打开");
+        this->homeTimer->start(1000);
     }else{
         ui->label_com_status->setText("串口状态: 打开失败");
     }
@@ -72,4 +77,21 @@ void ComConfig::onExitResult()
     ui->label_paritybits->setText("");
     ui->label_databits->setText("");
     ui->label_com_status->setText("串口状态:");
+    this->homeTimer->stop();
+}
+
+void ComConfig::timesReadHumiture()
+{
+    for(int i = 1; i <= DEVICE_COUNTS; i++){
+        Task task;
+        task.m_page = 0;
+        task.m_deviceAddr = i;
+        task.task_type = Task::TaskType::Read_Request;
+        task.ReadRegisterType = Task::RegisterType::InputRegisters;
+        task.ReadStartAddress = 0;
+        task.ReadLen = 2;
+        QVariant msg;
+        msg.setValue(task);
+        emit readHumiture(msg);
+    }
 }

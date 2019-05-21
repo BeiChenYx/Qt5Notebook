@@ -15,6 +15,11 @@ public:
     explicit SingleConfig(QWidget *parent = nullptr);
     ~SingleConfig();
 
+signals:
+    void currentDeviceAddr(int deviceAddr);
+private slots:
+    void on_pushButton_set_clicked();
+
 private:
     Ui::SingleConfig *ui;
 };

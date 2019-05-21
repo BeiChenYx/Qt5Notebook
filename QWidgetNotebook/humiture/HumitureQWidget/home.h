@@ -5,6 +5,7 @@
 #include "singledisplay.h"
 #include "singleconfig.h"
 #include "doubledisplay.h"
+#include "humiturerecord.h"
 
 
 namespace Ui {
@@ -22,7 +23,10 @@ public:
     void initUI();
     void initConnections();
 
-private slots:
+signals:
+    void singleCurrentAddr(int addr);
+
+public slots:
     void on_pushButton_single_left_clicked();
 
     void on_pushButton_single_right_clicked();
@@ -31,12 +35,18 @@ private slots:
 
     void on_pushButton_double_right_clicked();
 
+    void onSingleHumidity(int deviceAddr, double temperature, double humidity);
+    void onDoubleHumidity(int deviceAddr, double temperature, double humidity);
+
+
 private:
     Ui::Home *ui;
 
-    SingleDisplay   *pSingleDisplay;
-    SingleConfig    *pSingleConfig;
-    DoubleDisplay   *pDoubleDisplay;
+    SingleDisplay       *pSingleDisplay;
+    SingleConfig        *pSingleConfig;
+    HumitureRecordPage  *pHumitureRecord;
+    DoubleDisplay       *pDoubleDisplay1;
+    DoubleDisplay       *pDoubleDisplay2;
 
     // 两个页面当前的索引
     int             singleCurrentIndex;

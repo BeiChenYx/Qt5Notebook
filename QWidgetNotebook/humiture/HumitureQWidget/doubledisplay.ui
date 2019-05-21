@@ -22,19 +22,6 @@
   <property name="styleSheet">
    <string notr="true">border-image: url(:/image/double.png);</string>
   </property>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>190</y>
-     <width>59</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>多点测试</string>
-   </property>
-  </widget>
  </widget>
  <resources/>
  <connections/>
