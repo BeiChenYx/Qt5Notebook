@@ -25,6 +25,7 @@ public:
 
 signals:
     void singleCurrentAddr(int addr);
+    void readReordHome(QVariant msg);
 
 public slots:
     void on_pushButton_single_left_clicked();
@@ -38,13 +39,14 @@ public slots:
     void onSingleHumidity(int deviceAddr, double temperature, double humidity);
     void onDoubleHumidity(int deviceAddr, double temperature, double humidity);
 
+public:
+    HumitureRecordPage  *pHumitureRecord;
 
 private:
     Ui::Home *ui;
 
     SingleDisplay       *pSingleDisplay;
     SingleConfig        *pSingleConfig;
-    HumitureRecordPage  *pHumitureRecord;
     DoubleDisplay       *pDoubleDisplay1;
     DoubleDisplay       *pDoubleDisplay2;
 

@@ -26,7 +26,7 @@ signals:
 
     void readHumiture(QVariant msg);
 
-private slots:
+public slots:
     void on_pushButton_com_clicked();
 
     void onOpenResult(bool result, QVariant msg);

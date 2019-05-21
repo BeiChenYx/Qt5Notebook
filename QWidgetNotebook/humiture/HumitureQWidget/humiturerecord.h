@@ -27,6 +27,9 @@ public:
     explicit HumitureRecordPage(QWidget *parent = nullptr);
     ~HumitureRecordPage();
 
+signals:
+    void readRecord(QVariant msg);
+
 public slots:
     void onHumitureRecord(QVariant msg);
     void onQueryBtn();

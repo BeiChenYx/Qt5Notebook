@@ -356,11 +356,11 @@ void Humiture::onSingleCurrentAddr(int addr)
 
 void Humiture::onRecordResult(QVariant msg)
 {
-
+    this->pHome->pHumitureRecord->onHumitureRecord(msg);
 }
 void Humiture::onExitModbus()
 {
-
+    this->pComConfig->on_pushButton_com_clicked();
 }
 
 void Humiture::onTask(QVariant msg)
