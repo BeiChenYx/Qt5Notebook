@@ -5,7 +5,7 @@
 #include "singledisplay.h"
 #include "singleconfig.h"
 #include "doubledisplay.h"
-#include "humiturerecord.h"
+#include "humiturerecordpage.h"
 
 
 namespace Ui {
@@ -25,7 +25,7 @@ public:
 
 signals:
     void singleCurrentAddr(int addr);
-    void readReordHome(QVariant msg);
+    void readRecordHome(QVariant msg);
 
 public slots:
     void on_pushButton_single_left_clicked();

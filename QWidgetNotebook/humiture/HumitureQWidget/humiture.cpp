@@ -10,7 +10,7 @@ Humiture::Humiture(QWidget *parent) :
     this->singleCurrentAddr = 1;
     this->initUI();
     this->initConnections();
-
+    this->on_pushButton_max_clicked();
 }
 
 Humiture::~Humiture()
@@ -77,7 +77,8 @@ void Humiture::initConnections()
             this, SLOT(onTask(QVariant)));
     connect(this->pModifyCmd, SIGNAL(modifyCmd(QVariant)),
             this, SLOT(onTask(QVariant)));
-
+    connect(this->pHome, SIGNAL(readRecordHome(QVariant)),
+            this, SLOT(onTask(QVariant)));
     connect(this->pHome, SIGNAL(singleCurrentAddr(int)),
             this, SLOT(onSingleCurrentAddr(int)));
 }
@@ -300,7 +301,8 @@ void Humiture::on_pushButton_max_clicked()
         this->showNormal();
         ui->pushButton_max->setStyleSheet("border-image: url(:/image/max.png);");
     }else if (this->windowStatus == WindowStatus::NORMAL) {
-        this->showMaximized();
+//        this->showMaximized();
+        this->showFullScreen();
         ui->pushButton_max->setStyleSheet("border-image: url(:/image/reset.png);");
     }
 }

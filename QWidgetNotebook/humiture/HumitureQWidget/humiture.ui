@@ -83,7 +83,24 @@ QComboBox QAbstractItemView::item {
     selection-background-color: #3270E1;
 	height: 30px;
 }
-
+QCheckBox{
+	color: &quot;#59BAF2&quot;;
+	background-color: rgba(255, 255, 255, 0);
+}
+QCheckBox::indicator{
+	width: 28px;
+	height: 28px;
+}
+QCheckBox::indicator::unchecked{
+	image: url(:/image/Uncheck.png);
+}
+QCheckBox::indicator::checked{
+	image: url(:/image/Checked.png);
+}
+QDateEdit{
+	color: &quot;#59BAF2&quot;;
+	background-color: rgba(255, 255, 255, 0);
+}
 </string>
   </property>
   <layout class="QGridLayout" name="gridLayout">

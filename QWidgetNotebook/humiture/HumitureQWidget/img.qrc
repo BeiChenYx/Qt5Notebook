@@ -16,5 +16,7 @@
         <file>image/single.png</file>
         <file>image/title.png</file>
         <file>image/write.png</file>
+        <file>image/Checked.png</file>
+        <file>image/Uncheck.png</file>
     </qresource>
 </RCC>

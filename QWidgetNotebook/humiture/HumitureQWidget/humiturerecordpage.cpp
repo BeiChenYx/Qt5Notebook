@@ -1,7 +1,8 @@
 #include <QDebug>
 #include <QDate>
-#include "humiturerecord.h"
-#include "ui_humiturerecord.h"
+#include <QRegExp>
+#include "humiturerecordpage.h"
+#include "ui_humiturerecordpage.h"
 
 HumitureRecordPage::HumitureRecordPage(QWidget *parent) :
     QWidget(parent),
@@ -25,14 +26,16 @@ void HumitureRecordPage::onQueryBtn()
 {
     foreach (QString str, this->deviceNoHandle.keys()) {
         QLineSeries *line = this->deviceNoHandle.value(str);
+        line->clear();
         delete line;
     }
     this->deviceNoHandle.clear();
     QString date = ui->dateEdit->text();
+    //    date.replace(QRegExp("/"), "-");
     qDebug() << "date: " << date;
     QList<int> deviceList;
     for (int i = 1; i <= 10; i++) {
-        QCheckBox *check = this->findChild<QCheckBox*>(QString("checkBox_1").arg(i));
+        QCheckBox *check = this->findChild<QCheckBox*>(QString("checkBox_%1").arg(i));
         if(check->isChecked()){
             QLineSeries *plineT = this->pHumitureCharts->createLineSerie(QString("设备%1温度").arg(i), true);
             QLineSeries *plineH = this->pHumitureCharts->createLineSerie(QString("设备%1湿度").arg(i), false);

@@ -59,7 +59,7 @@ void Home::initConnections()
     connect(this->pSingleConfig, SIGNAL(currentDeviceAddr(int)),
             this->pSingleDisplay, SLOT(onCurrentDeviceAddr(int)));
     connect(this->pHumitureRecord, SIGNAL(readRecord(QVariant)),
-            this, SIGNAL(readReordHome(QVariant)));
+            this, SIGNAL(readRecordHome(QVariant)));
 }
 
 void Home::on_pushButton_single_left_clicked()

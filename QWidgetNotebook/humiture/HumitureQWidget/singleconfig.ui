@@ -54,7 +54,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox_deviceAddr"/>
+        <widget class="QComboBox" name="comboBox_deviceAddr">
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
@@ -75,6 +82,12 @@
        </item>
        <item>
         <widget class="QPushButton" name="pushButton_set">
+         <property name="maximumSize">
+          <size>
+           <width>200</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="text">
           <string>设置</string>
          </property>

@@ -6,6 +6,7 @@ ComConfig::ComConfig(QWidget *parent) :
     ui(new Ui::ComConfig)
 {
     ui->setupUi(this);
+    this->isClear = false;
     // 自定义 ComboBox 的样式
     ui->comboBox_com->setView(new QListView);
     for(int i = 1; i < 10; i++){
@@ -83,6 +84,10 @@ void ComConfig::onExitResult()
 void ComConfig::timesReadHumiture()
 {
     for(int i = 1; i <= DEVICE_COUNTS; i++){
+
+        if(this->isClear){
+            continue;
+        }
         Task task;
         task.m_page = 0;
         task.m_deviceAddr = i;
@@ -93,5 +98,19 @@ void ComConfig::timesReadHumiture()
         QVariant msg;
         msg.setValue(task);
         emit readHumiture(msg);
+    }
+}
+
+void ComConfig::on_checkBox_stateChanged(int arg1)
+{
+    if(ui->checkBox->isChecked()){
+        Task task;
+        task.m_ClearQueue = true;
+        QVariant msg;
+        msg.setValue(task);
+        this->isClear = true;
+        emit readHumiture(msg);
+    }else {
+        this->isClear = false;
     }
 }

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>HumitureRecord</class>
- <widget class="QWidget" name="HumitureRecord">
+ <class>HumitureRecordPage</class>
+ <widget class="QWidget" name="HumitureRecordPage">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>662</width>
-    <height>426</height>
+    <width>685</width>
+    <height>443</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" rowstretch="9,1,1" rowminimumheight="0,0,0">
+  <layout class="QGridLayout" name="gridLayout_2" rowstretch="9,1,1">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -149,6 +149,9 @@
    </item>
    <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>10</number>
+     </property>
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
@@ -157,10 +160,17 @@
       </widget>
      </item>
      <item>
-      <widget class="QDateEdit" name="dateEdit"/>
+      <widget class="QDateEdit" name="dateEdit">
+       <property name="displayFormat">
+        <string>yyyy-MM-dd</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pushButton">
+       <property name="toolTip">
+        <string>建议打开暂停读取(串口配置里面)</string>
+       </property>
        <property name="text">
         <string>查询</string>
        </property>

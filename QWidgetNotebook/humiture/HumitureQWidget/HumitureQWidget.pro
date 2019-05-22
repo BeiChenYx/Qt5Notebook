@@ -36,7 +36,7 @@ SOURCES += \
         doubledisplay.cpp \
         home.cpp \
         humiturecharts.cpp \
-        humiturerecord.cpp \
+        humiturerecordpage.cpp \
         main.cpp \
         humiture.cpp \
         modbustest.cpp \
@@ -60,7 +60,7 @@ HEADERS += \
         home.h \
         humiture.h \
         humiturecharts.h \
-        humiturerecord.h \
+        humiturerecordpage.h \
         modbustest.h \
         modifycmd.h \
         readcmd.h \
@@ -72,7 +72,7 @@ FORMS += \
         doubledisplay.ui \
         home.ui \
         humiture.ui \
-        humiturerecord.ui \
+        humiturerecordpage.ui \
         modbustest.ui \
         modifycmd.ui \
         readcmd.ui \

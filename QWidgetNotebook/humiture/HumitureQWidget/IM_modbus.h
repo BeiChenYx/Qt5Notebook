@@ -158,6 +158,7 @@ public:
     // 当前设备是否使用 Rtu 方式打开，否则用 tcp 方式
     bool                    m_isRtu;
     bool                    m_isRecord;
+    bool                    m_ClearQueue;
     QString                 m_queryDate;
 };
 Q_DECLARE_METATYPE(Task)

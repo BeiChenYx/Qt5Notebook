@@ -458,6 +458,7 @@ Task::Task()
     ReadLen = 0;
     m_deviceAddr = 1;
     m_isRecord = false;
+    m_ClearQueue = false;
 
     // 针对 UT-5521 的项目
     m_page = 0;
@@ -478,6 +479,7 @@ void Task::copyFrom(const Task &that)
     this->m_deviceAddr = that.m_deviceAddr;
     this->m_queryDate = that.m_queryDate;
     this->m_isRecord = that.m_isRecord;
+    this->m_ClearQueue = that.m_ClearQueue;
 
     // 针对 UT-5521 项目
     this->m_page = that.m_page;
@@ -604,7 +606,8 @@ bool WorkThread::handleInsertRecord(Task &task)
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
 //    QString path = QCoreApplication::applicationDirPath();
-    db.setDatabaseName("D:/WorkSpace/WorkProjectSpace/Humiture/Humiture/SqlModel.db3");
+    db.setDatabaseName("./SqlModel.db3");
+//    db.setDatabaseName("D:/WorkSpace/OpenSource/Qt5Notebook/QWidgetNotebook/humiture/HumitureQWidget/SqlModel.db3");
     if(!db.open()){
         qDebug() << "Can not open database;";
         return false;
@@ -627,7 +630,8 @@ QList<HumitureRecord> WorkThread::handleQueryRecord(int deviceAddr, QString date
     QList<HumitureRecord> result;
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
 //    QString path = QCoreApplication::applicationDirPath();
-    db.setDatabaseName("D:/WorkSpace/WorkProjectSpace/Humiture/Humiture/SqlModel.db3");
+    db.setDatabaseName("./SqlModel.db3");
+//    db.setDatabaseName("D:/WorkSpace/OpenSource/Qt5Notebook/QWidgetNotebook/humiture/HumitureQWidget/SqlModel.db3");
     if(!db.open()){
         qDebug() << "Can not open database;";
         return result;
@@ -707,7 +711,7 @@ void WorkThread::run()
                 int re = this->handleReadRquest(pDevice, task, isRecord);
                 if(re > 0){
                     if(task.m_page == 0){
-//                        handleInsertRecord(task);
+                        handleInsertRecord(task);
                     }
                 }
                 QThread::msleep(100);
@@ -744,6 +748,10 @@ void WorkThread::run()
 void WorkThread::pushToTask(Task &task)
 {
     QMutexLocker locker(&m_mutex);
+    if(task.m_ClearQueue){
+        // 需要及时清理队列，以保证最新任务的及时处理
+        this->m_Task.clear();
+    }
     this->m_Task.enqueue(task);
 }
 

@@ -7,6 +7,7 @@ ReadCmd::ReadCmd(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->lineEdit_send->hide();
+    ui->label_5->hide();
     ui->lineEdit_deviceAddr->setText("01");
     ui->lineEdit_registerAddr->setText("0000");
     ui->lineEdit_registerCount->setText("01");

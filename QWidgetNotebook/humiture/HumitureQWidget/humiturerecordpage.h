@@ -1,5 +1,5 @@
-#ifndef HUMITURERECORD_H
-#define HUMITURERECORD_H
+#ifndef HUMITURERECORDPAGE_H
+#define HUMITURERECORDPAGE_H
 
 #include <QWidget>
 #include <QHBoxLayout>
@@ -39,5 +39,4 @@ private:
     RecordHumitureChart     *pHumitureCharts;
     QMap<QString, QLineSeries*>  deviceNoHandle;
 };
-
-#endif // HUMITURERECORD_H
+#endif // HUMITURERECORDPAGE_H

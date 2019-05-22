@@ -34,10 +34,14 @@ public slots:
 
     void timesReadHumiture();
 
+private slots:
+    void on_checkBox_stateChanged(int arg1);
+
 private:
     Ui::ComConfig *ui;
 
     QTimer          *homeTimer;
+    volatile bool isClear;
 };
 
 #endif // COMCONFIG_H
