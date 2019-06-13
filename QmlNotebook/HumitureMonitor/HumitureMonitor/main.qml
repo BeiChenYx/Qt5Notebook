@@ -8,7 +8,7 @@ Window {
     visible: true;
     width: 960; height: 540;
 
-    flags: Qt.Window | Qt.FramelessWindowHint;
+//    flags: Qt.Window | Qt.FramelessWindowHint;
 
     BorderImage {
         id: background;
@@ -53,7 +53,7 @@ Window {
                 Layout.row: 0; Layout.column: 0;
                 Layout.fillHeight: true;
                 Layout.fillWidth: true;
-                Layout.preferredWidth: 300;
+                Layout.preferredWidth: 100;
                 color: "yellow";
 
             }
