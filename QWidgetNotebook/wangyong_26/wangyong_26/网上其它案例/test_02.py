@@ -155,6 +155,8 @@ class ChartView(QChartView):
         super(ChartView, self).mouseMoveEvent(event)
         pos = event.pos()
         # 把鼠标位置所在点转换为对应的xy值
+        # mapToValue 是将在QChart的点转换为对应xy轴的值
+        # mapToPosition 和 mapToValue 刚好相反,将 xy 值转换为 QChart 的点坐标
         x = self._chart.mapToValue(pos).x()
         y = self._chart.mapToValue(pos).y()
 
@@ -264,6 +266,7 @@ class ChartView(QChartView):
         ]
         for series_name, data_list in dataTable:
             series = QLineSeries(self._chart)
+            # enumerate 将序列和索引打包成一个索引索引序列
             for j, v in enumerate(data_list):
                 series.append(j, v)
             series.setName(series_name)
@@ -287,6 +290,8 @@ class ChartView(QChartView):
         step = (max_x - min_x) / (7 - 1)  # 7个tick
         for i in range(0, 7):
             axis_x.append(self.category[i], min_x + i * step)
+
+        # setAxisX 是过时的接口，不应该继续使用
         self._chart.setAxisX(axis_x, self._chart.series()[-1])
         # chart的图例
         legend = self._chart.legend()
