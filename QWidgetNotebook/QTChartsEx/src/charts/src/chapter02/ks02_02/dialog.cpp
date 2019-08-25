@@ -41,9 +41,6 @@ void CDialog::initialize()
 														   
 	// 构建图表
 	m_pChart = new QChart();					
-	
-	// 设置图元尺寸
-	m_pChart->setGeometry(10, 10, 300, 260);	
 
 	// 添加系列
 	m_pChart->addSeries(m_pSeries);				
@@ -66,4 +63,9 @@ void CDialog::initialize()
 	
 	// 将图元添加到场景
 	m_pScene->addItem(m_pChart);	
+
+    // 设置图元尺寸
+    m_pChart->setGeometry(100, 100, 300, 260);
+//    m_pChart->setGeometry(m_pScene->sceneRect().width() / 2 * -1, m_pScene->sceneRect().height() / 2 * -1, 300, 260);
+    m_pChart->setPos(m_pScene->sceneRect().width() / 2 * -1, m_pScene->sceneRect().height() / 2 * -1);
 }
