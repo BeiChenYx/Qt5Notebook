@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     this->laoutCharts();
-    resize(1000, 600);
+    this->showMaximized();
 }
 
 MainWindow::~MainWindow()
@@ -68,10 +68,12 @@ void MainWindow::laoutCharts()
     view2 = new QChartView();
     view1->setChart(pChart);
     view2->setChart(pChart2);
-    QVBoxLayout *viewLayout = new QVBoxLayout();
-    viewLayout->addWidget(view1);
-    viewLayout->addWidget(view2);
-    ui->widget->setLayout(viewLayout);
+    splitter = new QSplitter(Qt::Vertical, this);
+    splitter->addWidget(view1);
+    splitter->addWidget(view2);
+    splitter->setStretchFactor(1, 2);
+    splitter->setStretchFactor(2, 1);
+    this->setCentralWidget(splitter);
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)

@@ -3,8 +3,9 @@
 
 #include <QMainWindow>
 #include <QtCharts>
+#include <QSplitter>
 
- using namespace QtCharts;
+using namespace QtCharts;
 
 namespace Ui {
 class MainWindow;
@@ -28,6 +29,7 @@ private:
     QChartView  *view2;
     QGraphicsView *mainView;
     QGraphicsScene *mainScene;
+    QSplitter * splitter;
 };
 
 #endif // MAINWINDOW_H
