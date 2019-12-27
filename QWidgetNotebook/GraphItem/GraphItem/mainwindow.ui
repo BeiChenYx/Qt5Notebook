@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>475</width>
+    <height>358</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>475</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>文件</string>
+    </property>
+    <addaction name="actionNew"/>
+    <addaction name="actionClear"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuEle">
+    <property name="title">
+     <string>元素</string>
+    </property>
+    <addaction name="actionEllipse"/>
+    <addaction name="actionPolygon"/>
+    <addaction name="actionText"/>
+    <addaction name="actionRect"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEle"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionNew">
+   <property name="text">
+    <string>新建</string>
+   </property>
+  </action>
+  <action name="actionClear">
+   <property name="text">
+    <string>清除</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>退出</string>
+   </property>
+  </action>
+  <action name="actionEllipse">
+   <property name="text">
+    <string>椭圆</string>
+   </property>
+  </action>
+  <action name="actionPolygon">
+   <property name="text">
+    <string>多边形</string>
+   </property>
+  </action>
+  <action name="actionText">
+   <property name="text">
+    <string>文字</string>
+   </property>
+  </action>
+  <action name="actionRect">
+   <property name="text">
+    <string>长方形</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

@@ -135,7 +135,6 @@ class ChartView(QChartView):
         serie = self._chart.series()[0]
         bars = [(bar, bar.at(index))
                 for bar in serie.barSets() if self.min_x <= x <= self.max_x and self.min_y <= y <= self.max_y]
-#         print(bars)
         if bars:
             right_top = self._chart.mapToPosition(
                 QPointF(self.max_x, self.max_y))
@@ -230,6 +229,7 @@ class ChartView(QChartView):
             # 随机数据
             for _ in range(7):
                 bar.append(randint(0, 10))
+                
             series.append(bar)
             bar.hovered.connect(self.handleBarHoverd)  # 鼠标悬停
         self._chart.addSeries(series)
