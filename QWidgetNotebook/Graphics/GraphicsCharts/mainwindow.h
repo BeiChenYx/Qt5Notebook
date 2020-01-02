@@ -30,6 +30,7 @@ private:
     QGraphicsView *mainView;
     QGraphicsScene *mainScene;
     QSplitter * splitter;
+    QGraphicsWidget * mainWidget;
 };
 
 #endif // MAINWINDOW_H
