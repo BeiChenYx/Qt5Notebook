@@ -3,6 +3,7 @@ import sys
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 from ui_calendar import Ui_calendarWidget
+from calendarItem import CalendarItem
 
 
 class CalendarWidget(QtWidgets.QWidget, Ui_calendarWidget):
@@ -10,6 +11,7 @@ class CalendarWidget(QtWidgets.QWidget, Ui_calendarWidget):
     def __init__(self, parent=None):
         super(CalendarWidget, self).__init__(parent)
         self.setupUi(self)
+        self.dayItems = list()
         self.initUi()
         self.initConnections()
 
@@ -31,15 +33,18 @@ class CalendarWidget(QtWidgets.QWidget, Ui_calendarWidget):
         self.toolButton_nm.setText(chr(0xf061))
         self.dateEdit_y.setDate(QtCore.QDate.currentDate())
         self.dateEdit_m.setDate(QtCore.QDate.currentDate())
-
-    def paintEvent(self, event):
         self.initCalendar()
 
     def initCalendar(self):
         """ 初始化日历主体 """
-        for i in range(1, 43):
-            widget = self.findChild(QtWidgets.QWidget, 'widget_c1')
-            self.drawWidget(widget, i)
+        layoutBody = QtWidgets.QGridLayout(self.widget_calendar)
+        layoutBody.setContentsMargins(1, 1, 1, 1)
+        layoutBody.setHorizontalSpacing(0)
+        layoutBody.setVerticalSpacing(0)
+        for i in range(0, 42):
+            dayItem = CalendarItem(self)
+            layoutBody.addWidget(dayItem, i/7, i%7)
+            self.dayItems.append(dayItem)
 
     def initConnections(self):
         self.toolButton_py.clicked.connect(self.onToolButton_py)

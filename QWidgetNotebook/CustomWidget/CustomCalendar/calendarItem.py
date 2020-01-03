@@ -16,8 +16,6 @@ class CalendarItem(QtWidgets.QWidget):
 
     def __init__(self, parent=None):
         super(CalendarItem, self).__init__(parent)
-        self.day = '1'
-        self.lunar = '初一'
         self.borderColor = QtGui.QColor(180, 180, 180)
         self.lunarColor = QtGui.QColor(55, 156, 238)
         self.currentTextColor = QtGui.QColor(0, 0, 0)
@@ -37,6 +35,9 @@ class CalendarItem(QtWidgets.QWidget):
         self.pressed = False
         self.select = False
         self.nowDate = QtCore.QDate.currentDate()
+
+    def setDate(self, date: QtCore.QDate):
+        self.nowDate = date
 
     def enterEvent(self, event):
         self.hover = True
@@ -84,11 +85,18 @@ class CalendarItem(QtWidgets.QWidget):
         width = self.width()
         height = self.height()
         side = width if width < height else height
+        if self.select:
+            color = self.selectTextColor
+        elif self.hover:
+            color = self.hoverTextColor
+        else:
+            color = self.lunarColor
         font = QtGui.QFont()
         font.setPixelSize(side / 2.7)
+        painter.setPen(color)
         painter.setFont(font)
         dayRect = QtCore.QRect(0, 0, width, height / 1.7)
-        painter.drawText(dayRect, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignBottom, self.day)
+        painter.drawText(dayRect, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignBottom, str(self.nowDate.day()))
         painter.restore()
 
     def drawBgCurrent(self, painter: QtGui.QPainter, color: QtGui.QColor):
@@ -116,8 +124,8 @@ class CalendarItem(QtWidgets.QWidget):
         font = QtGui.QFont()
         font.setPixelSize(side / 5)
         painter.setFont(font)
-        lunarRect = QtCore.QRect(0, height / 2, width, height / 2) 
-        painter.drawText(lunarRect, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignBottom, self.lunar)
+        lunarRect = QtCore.QRect(0, height / 2.8, width, height / 2) 
+        painter.drawText(lunarRect, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignBottom, self.getLunarDay())
         painter.restore()
 
     def getLunarDay(self) -> str:
@@ -131,7 +139,8 @@ class CalendarItem(QtWidgets.QWidget):
         rmc = ["初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三", "十四", "十五",
                "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十", "卅一"]
         lunar = sxtwl.Lunar()
-        day = lunar.getDayBySolar(self.nowDate.year, self.nowDate.month, self.nowDate.day)
+        day = lunar.getDayBySolar(self.nowDate.year(), self.nowDate.month(), self.nowDate.day())
+        return rmc[day.Ldi]
 
 
 
