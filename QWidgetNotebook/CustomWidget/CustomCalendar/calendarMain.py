@@ -41,6 +41,7 @@ class CalendarWidget(QtWidgets.QWidget, Ui_calendarWidget):
 
     def initCalendar(self, date=None):
         """ 初始化日历主体 """
+<<<<<<< HEAD:QWidgetNotebook/CustomWidget/CustomCalendar/calendarMain.py
         # 清空布局内的控件
         item = None;
         while True:

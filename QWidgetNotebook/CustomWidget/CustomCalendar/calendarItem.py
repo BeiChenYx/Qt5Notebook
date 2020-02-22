@@ -32,6 +32,9 @@ class CalendarItem(QtWidgets.QWidget):
         self.select = False
         self.nowDate = QtCore.QDate.currentDate()
 
+    def setDate(self, date: QtCore.QDate):
+        self.nowDate = date
+
     def enterEvent(self, event):
         self.hover = True
         self.update()
@@ -79,6 +82,12 @@ class CalendarItem(QtWidgets.QWidget):
         width = self.width()
         height = self.height()
         side = width if width < height else height
+        if self.select:
+            color = self.selectTextColor
+        elif self.hover:
+            color = self.hoverTextColor
+        else:
+            color = self.lunarColor
         font = QtGui.QFont()
         font.setPixelSize(int(side * 2 / 3))
         painter.setFont(font)
