@@ -27,10 +27,7 @@ private:
     Ui::MainWindow *ui;
     QChartView  *view1;
     QChartView  *view2;
-    QGraphicsView *mainView;
-    QGraphicsScene *mainScene;
     QSplitter * splitter;
-    QGraphicsWidget * mainWidget;
 };
 
 #endif // MAINWINDOW_H

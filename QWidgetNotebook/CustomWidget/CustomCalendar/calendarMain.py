@@ -1,8 +1,10 @@
 import sys
+import calendar
 
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 from ui_calendar import Ui_calendarWidget
+from calendarItem import CalendarItem
 
 
 class CalendarWidget(QtWidgets.QWidget, Ui_calendarWidget):
@@ -10,6 +12,10 @@ class CalendarWidget(QtWidgets.QWidget, Ui_calendarWidget):
     def __init__(self, parent=None):
         super(CalendarWidget, self).__init__(parent)
         self.setupUi(self)
+        self.now = QtCore.QDate.currentDate()
+        self.layout_body = QtWidgets.QGridLayout(self.widget_calendar)
+        self.layout_body.setSpacing(2)
+        self.layout_body.setContentsMargins(1, 1, 1, 1)
         self.initUi()
         self.initConnections()
 
@@ -29,17 +35,34 @@ class CalendarWidget(QtWidgets.QWidget, Ui_calendarWidget):
         self.toolButton_ny.setText(chr(0xf061))
         self.toolButton_pm.setText(chr(0xf060))
         self.toolButton_nm.setText(chr(0xf061))
-        self.dateEdit_y.setDate(QtCore.QDate.currentDate())
-        self.dateEdit_m.setDate(QtCore.QDate.currentDate())
-
-    def paintEvent(self, event):
+        self.dateEdit_y.setDate(self.now)
+        self.dateEdit_m.setDate(self.now)
         self.initCalendar()
 
-    def initCalendar(self):
+    def initCalendar(self, date=None):
         """ 初始化日历主体 """
-        for i in range(1, 43):
-            widget = self.findChild(QtWidgets.QWidget, 'widget_c1')
-            self.drawWidget(widget, i)
+        # 清空布局内的控件
+        item = None;
+        while True:
+            item = self.layout_body.takeAt(0)
+            if item is None:
+                break
+            item.widget().hide()
+            self.layout_body.removeItem(item)
+            del item
+        self.layout_body.update()
+
+        row = 0
+        week_map = {0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 0}
+        now = self.now if date is None else date
+        _, nums = calendar.monthrange(now.year(), now.month())
+        week_day = [(i, calendar.weekday(now.year(), now.month(), i)) for i in range(1, nums+1)]
+        for i, week in week_day:
+            col = week_map[week]
+            week_end = True if col == 6 or col == 0 else False
+            item = CalendarItem(i, week_end)
+            self.layout_body.addWidget(item, row, col)
+            row = (row + 1) if col == 6 else row
 
     def initConnections(self):
         self.toolButton_py.clicked.connect(self.onToolButton_py)
@@ -51,44 +74,54 @@ class CalendarWidget(QtWidgets.QWidget, Ui_calendarWidget):
         self.dateEdit_m.dateChanged.connect(self.onDateChanged_m)
 
     def onToolButton_py(self):
-        now = self.dateEdit_y.date()
-        self.dateEdit_y.setDate(now.addYears(-1))
+        now = self.dateEdit_y.date().addYears(-1)
+        self.dateEdit_y.setDate(now)
+        self.initCalendar(now)
+        self.dateEdit_y.update()
+        self.dateEdit_m.update()
+        self.widget_calendar.update()
+
     def onToolButton_ny(self):
-        now = self.dateEdit_y.date()
-        self.dateEdit_y.setDate(now.addYears(1))
+        now = self.dateEdit_y.date().addYears(1)
+        self.dateEdit_y.setDate(now)
+        self.initCalendar(now)
+        self.dateEdit_y.update()
+        self.dateEdit_m.update()
+        self.widget_calendar.update()
+
     def onToolButton_pm(self):
         now = self.dateEdit_m.date()
         if now.month() == 1:
             self.onToolButton_py()
         self.dateEdit_m.setDate(now.addMonths(-1))
+        self.initCalendar(now.addMonths(-1))
+        self.dateEdit_m.update()
+        self.dateEdit_y.update()
+        self.widget_calendar.update()
+
     def onToolButton_nm(self):
         now = self.dateEdit_m.date()
         if now.month() == 12:
             self.onToolButton_ny()
         self.dateEdit_m.setDate(now.addMonths(1))
+        self.initCalendar(now.addMonths(1))
+        self.dateEdit_m.update()
+        self.dateEdit_y.update()
+        self.widget_calendar.update()
+
     def onPushButton_now(self):
-        self.dateEdit_y.setDate(QtCore.QDate.currentDate())
-        self.dateEdit_m.setDate(QtCore.QDate.currentDate())
+        self.dateEdit_y.setDate(self.now)
+        self.dateEdit_m.setDate(self.now)
+        self.initCalendar(self.now)
+        self.dateEdit_m.update()
+        self.dateEdit_y.update()
+        self.widget_calendar.update()
+
     def onDateChanged_y(self, date):
         pass
     def onDateChanged_m(self, date):
         pass
 
-    def drawWidget(self, widget: QtWidgets.QWidget, dayNum):
-        """ 绘制某个Widget，绘制日期和农历 """
-        width = widget.width()
-        height = widget.height()
-        side = width if width < height else height
-        painter = QtGui.QPainter(widget)
-        painter.save()
-        font = QtGui.QFont()
-        font.setPixelSize(side / 2.7)
-        painter.setFont(font)
-        dayRect = QtCore.QRect(0, 0, width, height / 1.7)
-        painter.drawText(dayRect, QtCore.Qt.AlignHCenter | QtCore.Qt.AlignBottom, str(dayNum))
-        painter.restore()
-
-        
 
 def ui():
     """ 显示UI界面，会阻塞线程，开启Qt事件循环 """
