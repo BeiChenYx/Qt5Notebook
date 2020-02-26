@@ -7,7 +7,7 @@ import pandas as pd
 from PyQt5.QtChart import QChartView, QChart, QLineSeries, QLegend, QCategoryAxis, QCandlestickSeries, QCandlestickSet,\
     QStackedBarSeries, QBarSet
 from PyQt5.QtCore import Qt, QPointF, QPoint, pyqtSignal, QRectF, QMargins, QEvent, QObject
-from PyQt5.QtGui import QPainter, QPen, QColor, QMouseEvent
+from PyQt5.QtGui import QPainter, QPen, QColor, QMouseEvent, QFont
 from PyQt5.QtWidgets import QApplication, QGraphicsLineItem, QWidget, QLabel, QHBoxLayout, QVBoxLayout, QGridLayout, \
     QGraphicsProxyWidget, QSplitter
 
@@ -21,6 +21,34 @@ def read_tick_data():
     sw_50 = pd.read_csv('sw_daily_201907162109.csv', encoding='utf-8')
     sw_50['trade_date'] = sw_50['trade_date'].apply(lambda x: str(x))
     return sw_50
+
+
+def min_approximate(value):
+    """ 根据给的值向下近似一定量的值 """
+    if value >= 100000:
+        return value * 0.999
+    elif 10000 < value < 100000:
+        return value * 0.99
+    elif 1000 < value < 10000:
+        return value * 0.99
+    elif 10 < value < 1000:
+        return value - 10
+    else:
+        return value
+
+
+def max_approximate(value):
+    """ 根据给定的值向上近似一定量的值 """
+    if value >= 100000:
+        return value * 1.001
+    elif 10000 < value < 100000:
+        return value * 1.01
+    elif 1000 < value < 10000:
+        return value * 1.10
+    elif 10 < value < 1000:
+        return value + 10
+    else:
+        return value
 
 
 class ToolTipWidget(QWidget):
@@ -142,9 +170,10 @@ class KLineChartView(QChartView):
         axis_x.setGridLineVisible(False)
         axis_y.setGridLineVisible(False)
         axis_x.setCategories(self.category)
-        max_p = self.stocks[['high', 'low']].stack().max() + 10
-        min_p = self.stocks[['high', 'low']].stack().min() - 10
-        axis_y.setRange(min_p, max_p)
+        axis_x.setLabelsVisible(False)
+        max_p = self.stocks[['high', 'low']].stack().max()
+        min_p = self.stocks[['high', 'low']].stack().min()
+        axis_y.setRange(min_approximate(min_p), max_approximate(max_p))
 
         # chart的图例
         legend = self._chart.legend()
@@ -168,6 +197,8 @@ class VLineChartView(QChartView):
         self._chart = QChart()
         self._zero_point = QPointF(0, 0)
         self._max_point = QPointF(0, 0)
+        # 成交量以万股为单位
+        self._vol_multiple = 10000
         self.resize(800, 300)
         self.init_chart()
         self._zero_value = (0, self._chart.axisY().min())
@@ -197,11 +228,11 @@ class VLineChartView(QChartView):
         bar_green.setColor(Qt.green)
         for _, stock in self.stocks.iterrows():
             if stock['open'] < stock['close']:
-                bar_red.append(stock['vol'] / 100)
+                bar_red.append(stock['vol'] / self._vol_multiple)
                 bar_green.append(0)
             else:
                 bar_red.append(0)
-                bar_green.append(stock['vol'] / 100)
+                bar_green.append(stock['vol'] / self._vol_multiple)
 
         series.append(bar_red)
         series.append(bar_green)
@@ -214,9 +245,10 @@ class VLineChartView(QChartView):
         axis_y.setGridLineVisible(False)
         axis_y.setLabelFormat("%.2f")
         axis_x.setCategories(self.category)
-        max_p = self.stocks[['vol', ]].stack().max() / 100 + 10
-        min_p = self.stocks[['vol', ]].stack().min() / 100 - 10
-        axis_y.setRange(min_p, max_p)
+        axis_x.setLabelsVisible(False)
+        max_p = self.stocks[['vol', ]].stack().max()
+        min_p = self.stocks[['vol', ]].stack().min()
+        axis_y.setRange(min_approximate(min_p / self._vol_multiple), max_approximate(max_p / self._vol_multiple))
 
         # chart的图例
         legend = self._chart.legend()
@@ -312,8 +344,12 @@ class KVWidget(QWidget):
                 self.k_line_v.hide()
                 self.v_line_v.hide()
                 self.v_line_h.hide()
-            # TODO: 横坐标使用时间来显示，并且只显示指定个数的时间, K线图隐藏横坐标轴，V线图显示横坐标轴即可
+            # TODO: 数据统一在主页面管理，提供灵活的接口设置和清除替换数据
+            # TODO: 使用自绘的方式在横坐标下面写日期，并且只显示指定个数的时间, K线图隐藏横坐标轴，V线图显示横坐标轴即可
             # TODO: 添加浮动框, 在K线里面添加所有信息，包括成交量的信息
+            # TODO: 在给定日期的K线图上绘制文字
+            # TODO: 向左右拖动图表能显示之前或之后的图表，且坐标跟着变化
+            # TODO: 能标准成本线，能计算指定两个点的涨幅度
 
         return super(KVWidget, self).eventFilter(obj, event)
 
