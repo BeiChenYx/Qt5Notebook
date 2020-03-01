@@ -18,9 +18,9 @@ def read_tick_data():
     蜡烛图需要 open, high, low, close,timestamp
     从csv文件中获取数据
     """
-    sw_50 = pd.read_csv('sw_daily_201907162109.csv', encoding='utf-8')
-    sw_50['trade_date'] = sw_50['trade_date'].apply(lambda x: str(x))
-    return sw_50
+    tick_data = pd.read_csv('ts_code_000001_sz_202003010807.csv', encoding='utf-8')
+    tick_data['trade_date'] = tick_data['trade_date'].apply(lambda x: str(x))
+    return tick_data
 
 
 class ToolTipWidget(QWidget):
@@ -31,8 +31,8 @@ class ToolTipWidget(QWidget):
         self.setAttribute(Qt.WA_StyledBackground, True)
         self.setStyleSheet(
             """
-            ToolTipWidget{background: rgba(50, 50, 50, 100);}
-            QLabel{color: white;}
+            ToolTipWidget{background: rgba(255, 255, 255, 0.5); border: 1px solid #dfe6eb;}
+            QLabel{color: black;}
             """
         )
         layout = QGridLayout()
@@ -47,6 +47,8 @@ class ToolTipWidget(QWidget):
         self.label_high_str = QLabel("****", self)
         label_low = QLabel("最低价:")
         self.label_low_str = QLabel("****", self)
+        label_val = QLabel('成交量:', self)
+        self.label_vol_str = QLabel('****', self)
         layout.addWidget(label_date, 0, 0)
         layout.addWidget(self.label_date_str, 0, 1)
         layout.addWidget(label_open, 1, 0)
@@ -57,15 +59,18 @@ class ToolTipWidget(QWidget):
         layout.addWidget(self.label_high_str, 3, 1)
         layout.addWidget(label_low, 4, 0)
         layout.addWidget(self.label_low_str, 4, 1)
+        layout.addWidget(label_val, 5, 0)
+        layout.addWidget(self.label_vol_str, 5, 1)
         self.setLayout(layout)
 
-    def updateUi(self, trade_date, openT, closeT, highT, lowT):
+    def update_ui(self, trade_date, open_v, close_v, high_v, low_v, vol_v):
         """ 更新数据 """
         self.label_date_str.setText(trade_date)
-        self.label_open_str.setText(openT)
-        self.label_close_str.setText(closeT)
-        self.label_high_str.setText(highT)
-        self.label_low_str.setText(lowT)
+        self.label_open_str.setText(open_v)
+        self.label_close_str.setText(close_v)
+        self.label_high_str.setText(high_v)
+        self.label_low_str.setText(low_v)
+        self.label_vol_str.setText(vol_v)
 
 
 class GraphicsProxyWidget(QGraphicsProxyWidget):
@@ -83,14 +88,17 @@ class GraphicsProxyWidget(QGraphicsProxyWidget):
     def height(self):
         return self.size().height()
 
-    def show(self, trade_date, openT, closeT, highT, lowT, position):
+    def show(self, trade_date, open_v, close_v, high_v, low_v, vol_v, position):
         """ 显示窗口及更新数据 """
         self.setGeometry(QRectF(position, self.size()))
-        self.tipWidget.updateUi(trade_date, openT, closeT, highT, lowT)
+        self.tipWidget.update_ui(trade_date, open_v, close_v, high_v, low_v, vol_v)
         super(GraphicsProxyWidget, self).show()
 
 
 class KLineChartView(QChartView):
+
+    # QCandlestickSeries的hovered的信号响应后传递日期出去
+    candles_hovered = pyqtSignal(bool, str)
 
     def __init__(self, data: pd.DataFrame):
         super(KLineChartView, self).__init__()
@@ -100,15 +108,20 @@ class KLineChartView(QChartView):
         self._stocks = data
         self._category = list()
         self._count = None
-        self._zero_point = QPointF(0, 0)
-        self._max_point = QPointF(0, 0)
-        self.resize(800, 300)
 
         self.init_chart()
         self._zero_value = (0, self._chart.axisY().min())
         self._max_value = (len(self._chart.axisX().categories()), self._chart.axisY().max())
+        self._zero_point = self._chart.mapToPosition(QPointF(self._zero_value[0], self._zero_value[1]))
+        self._max_point = self._chart.mapToPosition(QPointF(self._max_value[0], self._max_value[1]))
         # 计算x轴单个cate的宽度，用来处理横线不能画到边界
         self._cate_width = (self._max_point.x() - self._zero_point.x()) / len(self._category)
+
+        self._series.hovered.connect(self.on_series_hovered)
+
+    def on_series_hovered(self, status, candles_set):
+        trade_date = time.strftime('%Y%m%d', time.localtime(candles_set.timestamp()))
+        self.candles_hovered.emit(status, trade_date)
 
     def set_name(self, name):
         self._series.setName(name)
@@ -121,17 +134,18 @@ class KLineChartView(QChartView):
 
     def add_series_values(self, data: pd.DataFrame, is_init=False):
         self._stocks = data
-        self._category = [trade_date[4:] for trade_date in self._stocks['trade_date']]
+        self._category = self._stocks['trade_date']
         self._count = len(self._category)
         for _, stock in self._stocks.iterrows():
             time_p = datetime.datetime.strptime(stock['trade_date'], '%Y%m%d')
             time_p = float(time.mktime(time_p.timetuple()))
             _set = QCandlestickSet(float(stock['open']), float(stock['high']),
                                    float(stock['low']), float(stock['close']), time_p, self._series)
-            # _set.hovered.connect(self.handleBarHoverd)  # 鼠标悬停
             self._series.append(_set)
 
         if not is_init:
+            self._stocks = data
+            self._category = self._stocks['trade_date']
             axis_x = self._chart.axisX()
             axis_y = self._chart.axisY()
             axis_x.setCategories(self._category)
@@ -150,7 +164,7 @@ class KLineChartView(QChartView):
         self._cate_width = (self._max_point.x() - self._zero_point.x()) / len(self._category)
 
     def max_point(self):
-        return QPointF(self._max_point.x() - self._cate_width / 2, self._max_point.y())
+        return QPointF(self._max_point.x() + self._cate_width / 2, self._max_point.y())
 
     def min_point(self):
         return QPointF(self._zero_point.x() - self._cate_width / 2, self._zero_point.y())
@@ -190,23 +204,29 @@ class KLineChartView(QChartView):
 
 
 class VLineChartView(QChartView):
+
+    bar_hovered = pyqtSignal(bool, str)
+
     def __init__(self, data: pd.DataFrame):
         super(VLineChartView, self).__init__()
         self._stocks = data
-        self._category = [trade_date[4:] for trade_date in self._stocks['trade_date']]
+        self._category = self._stocks['trade_date']
         self._chart = QChart()
         self._chart.setAnimationOptions(QChart.SeriesAnimations)
         self._series = QStackedBarSeries()
-        self._zero_point = QPointF(0, 0)
-        self._max_point = QPointF(0, 0)
         # 成交量以万股为单位
         self._vol_multiple = 10000
-        self.resize(800, 300)
         self.init_chart()
         self._zero_value = (0, self._chart.axisY().min())
         self._max_value = (len(self._chart.axisX().categories()), self._chart.axisY().max())
+        self._zero_point = self._chart.mapToPosition(QPointF(self._zero_value[0], self._zero_value[1]))
+        self._max_point = self._chart.mapToPosition(QPointF(self._max_value[0], self._max_value[1]))
         # 计算x轴单个cate的宽度，用来处理横线不能画到边界
         self._cate_width = (self._max_point.x() - self._zero_point.x()) / len(self._category)
+        self._series.hovered.connect(self.on_series_hovered)
+
+    def on_series_hovered(self, status, index):
+        self.bar_hovered.emit(status, self._category[index])
 
     def clear_series_value(self):
         self._series.clear()
@@ -232,6 +252,8 @@ class VLineChartView(QChartView):
         self._series.append(bar_green)
 
         if not is_init:
+            self._stocks = data
+            self._category = self._stocks['trade_date']
             axis_x = self._chart.axisX()
             axis_y = self._chart.axisY()
             axis_x.setCategories(self._category)
@@ -250,7 +272,7 @@ class VLineChartView(QChartView):
         self._cate_width = (self._max_point.x() - self._zero_point.x()) / len(self._category)
 
     def max_point(self):
-        return QPointF(self._max_point.x() - self._cate_width / 2, self._max_point.y())
+        return QPointF(self._max_point.x() + self._cate_width / 2, self._max_point.y())
 
     def min_point(self):
         return QPointF(self._zero_point.x() - self._cate_width / 2, self._zero_point.y())
@@ -289,13 +311,14 @@ class KVWidget(QWidget):
     def __init__(self):
         super(KVWidget, self).__init__()
         self.setMouseTracking(True)
+
         # 获取数据
         self.stocks = read_tick_data()
 
-        self.k_view = KLineChartView(self.stocks)
-        self.v_view = VLineChartView(self.stocks)
-        self.resize(800, 600)
-        # self.showMaximized()
+        self.k_view = KLineChartView(self.stocks[:100])
+        self.v_view = VLineChartView(self.stocks[:100])
+        self.k_view.candles_hovered.connect(self.on_series_hovered)
+        self.v_view.bar_hovered.connect(self.on_series_hovered)
 
         btn_widget = QWidget()
         h_layout = QHBoxLayout()
@@ -321,6 +344,7 @@ class KVWidget(QWidget):
         # layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.v_splitter)
         self.setLayout(layout)
+        # self.showMaximized()
 
         # 鼠标跟踪的十字线
         pen = QPen()
@@ -344,55 +368,70 @@ class KVWidget(QWidget):
         self.v_line_h.hide()
         self.v_line_v.hide()
 
+        # 鼠标在图表的位置, 初始化在左上角
+        self.tool_tip_widget = GraphicsProxyWidget(self.k_view.chart())
+        self.k_zero_point = self.k_view.min_point()
+        self.k_max_point = self.k_view.max_point()
+        self.v_zero_point = self.v_view.min_point()
+        self.v_max_point = self.v_view.max_point()
+        self._hovered_pos_left = QPointF(self.k_zero_point.x(), self.k_max_point.y())
+        self._hovered_pos_right = QPointF(self.k_max_point.x() - self.tool_tip_widget.width(), self.k_max_point.y())
+        self._hovered_pos = self._hovered_pos_left
+        # 鼠标在中心左边
+        self._is_left = True
+
         # 事件过滤
         QApplication.instance().installEventFilter(self)
+
+        # TODO: 使用自绘的方式在横坐标下面写日期，并且只显示指定个数的时间, K线图隐藏横坐标轴，V线图显示横坐标轴即可
+        # TODO: 在给定日期的K线图上绘制文字
+        # TODO: 向左右拖动图表能显示之前或之后的图表，且坐标跟着变化
+        # TODO: 能标准成本线，能计算指定两个点的涨幅度
 
     def eventFilter(self, obj: QObject, event: QEvent):
         if event.type() == QEvent.MouseMove:
             pos = QMouseEvent(event).globalPos()
             k_chart_pos = self.k_view.chart().mapFromParent(self.k_view.mapFromGlobal(pos))
             v_chart_pos = self.v_view.chart().mapFromParent(self.v_view.mapFromGlobal(pos))
-            # is_k_chart = self.k_view.chart().contains(k_chart_pos)
-            # is_v_chart = self.v_view.chart().contains(v_chart_pos)
-            # k线图原点和最右上点的坐标，v线图原点和最右上点的坐标
-            k_zero_point = self.k_view.min_point()
-            v_zero_point = self.v_view.min_point()
-            k_max_point = self.k_view.max_point()
-            v_max_point = self.v_view.max_point()
-            if (k_zero_point.y() >= k_chart_pos.y() >= k_max_point.y()) \
-                    and (k_zero_point.x() <= k_chart_pos.x() <= k_max_point.x()):
-                self.k_line_h.setLine(k_zero_point.x(), k_chart_pos.y(), k_max_point.x(), k_chart_pos.y())
-                self.k_line_v.setLine(k_chart_pos.x(), k_max_point.y(), k_chart_pos.x(), k_zero_point.y())
-                self.v_line_v.setLine(v_chart_pos.x(), v_max_point.y(), v_chart_pos.x(), v_zero_point.y())
-                self.k_line_h.show()
-                self.k_line_v.show()
-                self.v_line_v.show()
-                self.v_line_h.hide()
-            elif (v_zero_point.y() >= v_chart_pos.y() >= v_max_point.y()) \
-                    and (v_zero_point.x() <= v_chart_pos.x() <= v_max_point.x()):
-                self.k_line_v.setLine(k_chart_pos.x(), k_max_point.y(), k_chart_pos.x(), k_zero_point.y())
-                self.v_line_h.setLine(v_zero_point.x(), v_chart_pos.y(), k_max_point.x(), v_chart_pos.y())
-                self.v_line_v.setLine(v_chart_pos.x(), v_max_point.y(), v_chart_pos.x(), v_zero_point.y())
-                self.k_line_h.hide()
-                self.k_line_v.show()
-                self.v_line_v.show()
-                self.v_line_h.show()
-            else:
-                self.k_line_h.hide()
-                self.k_line_v.hide()
-                self.v_line_v.hide()
-                self.v_line_h.hide()
-            # TODO: 添加浮动框, 在K线里面添加所有信息，包括成交量的信息
-            # TODO: 使用自绘的方式在横坐标下面写日期，并且只显示指定个数的时间, K线图隐藏横坐标轴，V线图显示横坐标轴即可
-            # TODO: 在给定日期的K线图上绘制文字
-            # TODO: 向左右拖动图表能显示之前或之后的图表，且坐标跟着变化
-            # TODO: 能标准成本线，能计算指定两个点的涨幅度
+            self.k_zero_point = self.k_view.min_point()
+            self.k_max_point = self.k_view.max_point()
+            self.v_zero_point = self.v_view.min_point()
+            self.v_max_point = self.v_view.max_point()
+            self.update_lines(k_chart_pos, v_chart_pos)
+        elif event.type() == QEvent.Resize and obj == self:
+            self.update_margins()
+            self.k_zero_point = self.k_view.min_point()
+            self.k_max_point = self.k_view.max_point()
 
         return super(KVWidget, self).eventFilter(obj, event)
 
-    def resizeEvent(self, event):
-        super(KVWidget, self).resizeEvent(event)
-        self.update_margins()
+    def update_lines(self, k_chart_pos, v_chart_pos):
+        """ 更新跟踪的十字线 """
+        if (self.k_zero_point.y() >= k_chart_pos.y() >= self.k_max_point.y()) \
+                and (self.k_zero_point.x() <= k_chart_pos.x() <= self.k_max_point.x()):
+            self.k_line_h.setLine(self.k_zero_point.x(), k_chart_pos.y(), self.k_max_point.x(), k_chart_pos.y())
+            self.k_line_v.setLine(k_chart_pos.x(), self.k_max_point.y(), k_chart_pos.x(), self.k_zero_point.y())
+            self.v_line_v.setLine(v_chart_pos.x(), self.v_max_point.y(), v_chart_pos.x(), self.v_zero_point.y())
+            self.k_line_h.show()
+            self.k_line_v.show()
+            self.v_line_v.show()
+            self.v_line_h.hide()
+            self._is_left = k_chart_pos.x() < (self.k_max_point.x() + self.k_zero_point.x()) / 2
+        elif (self.v_zero_point.y() >= v_chart_pos.y() >= self.v_max_point.y()) \
+                and (self.v_zero_point.x() <= v_chart_pos.x() <= self.v_max_point.x()):
+            self.k_line_v.setLine(k_chart_pos.x(), self.k_max_point.y(), k_chart_pos.x(), self.k_zero_point.y())
+            self.v_line_h.setLine(self.v_zero_point.x(), v_chart_pos.y(), self.k_max_point.x(), v_chart_pos.y())
+            self.v_line_v.setLine(v_chart_pos.x(), self.v_max_point.y(), v_chart_pos.x(), self.v_zero_point.y())
+            self.k_line_h.hide()
+            self.k_line_v.show()
+            self.v_line_v.show()
+            self.v_line_h.show()
+            self._is_left = v_chart_pos.x() < (self.v_max_point.x() + self.v_zero_point.x()) / 2
+        else:
+            self.k_line_h.hide()
+            self.k_line_v.hide()
+            self.v_line_v.hide()
+            self.v_line_h.hide()
 
     def update_margins(self):
         margin_k = self.k_view.chart().margins()
@@ -410,18 +449,37 @@ class KVWidget(QWidget):
 
     def on_clear_clicked(self):
         """ 清空图表 """
-        print('on clear clicked')
         self.k_view.clear_series_values()
         self.v_view.clear_series_value()
         self.k_view.set_name('')
 
     def on_add_clicked(self):
         """ 添加数据 """
-        print('on add clicked')
         self.k_view.add_series_values(self.stocks)
         self.v_view.add_series_values(self.stocks)
         self.k_view.set_name(self.stocks['name'].iloc[0])
         self.update_margins()
+
+    def on_series_hovered(self, status: bool, index_date: str):
+        """ QCandlestickSeries的hovered的信号响应槽 """
+        if status:
+            self._hovered_pos_left = QPointF(self.k_zero_point.x(), self.k_max_point.y())
+            self._hovered_pos_right = QPointF(self.k_max_point.x() - self.tool_tip_widget.width(), self.k_max_point.y())
+            self._hovered_pos = self._hovered_pos_right if self._is_left else self._hovered_pos_left
+            tip_value_df = self.stocks[self.stocks['trade_date'] == index_date]
+            if tip_value_df.empty:
+                return
+            self.tool_tip_widget.show(
+                index_date,
+                str(tip_value_df['open'].iloc[0]),
+                str(tip_value_df['close'].iloc[0]),
+                str(tip_value_df['high'].iloc[0]),
+                str(tip_value_df['low'].iloc[0]),
+                str(tip_value_df['vol'].iloc[0]),
+                self._hovered_pos
+            )
+        else:
+            self.tool_tip_widget.hide()
 
 
 if __name__ == "__main__":
