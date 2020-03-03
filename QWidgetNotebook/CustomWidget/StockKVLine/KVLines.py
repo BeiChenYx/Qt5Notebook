@@ -3,13 +3,14 @@ import time
 import datetime
 
 import pandas as pd
+import numpy as np
 
 from PyQt5.QtChart import QChartView, QChart, QLineSeries, QLegend, QCategoryAxis, QCandlestickSeries, QCandlestickSet,\
     QStackedBarSeries, QBarSet
 from PyQt5.QtCore import Qt, QPointF, QPoint, pyqtSignal, QRectF, QMargins, QEvent, QObject
 from PyQt5.QtGui import QPainter, QPen, QColor, QMouseEvent, QFont
 from PyQt5.QtWidgets import QApplication, QGraphicsLineItem, QWidget, QLabel, QHBoxLayout, QVBoxLayout, QGridLayout, \
-    QGraphicsProxyWidget, QSplitter, QPushButton
+    QGraphicsProxyWidget, QSplitter, QPushButton, QGraphicsSimpleTextItem
 
 
 def read_tick_data():
@@ -185,6 +186,7 @@ class KLineChartView(QChartView):
         axis_y.setGridLineVisible(False)
         axis_x.setCategories(self._category)
         axis_x.setLabelsVisible(False)
+        axis_x.setVisible(False)
         max_p = self._stocks[['high', 'low']].stack().max()
         min_p = self._stocks[['high', 'low']].stack().min()
         axis_y.setRange(min_p * 0.99, max_p * 1.01)
@@ -197,8 +199,9 @@ class KLineChartView(QChartView):
         self.setChart(self._chart)
         # 设置外边界全部为0
         self._chart.layout().setContentsMargins(0, 0, 0, 0)
-        # 设置内边界都为0
-        # self._chart.setMargins(QMargins(0, 0, 0, 0))
+        # 设置内边界的bottom为0
+        margins = self._chart.margins()
+        self._chart.setMargins(QMargins(margins.left(), 0, margins.right(), 0))
         # 设置背景区域无圆角
         self._chart.setBackgroundRoundness(0)
 
@@ -224,6 +227,10 @@ class VLineChartView(QChartView):
         # 计算x轴单个cate的宽度，用来处理横线不能画到边界
         self._cate_width = (self._max_point.x() - self._zero_point.x()) / len(self._category)
         self._series.hovered.connect(self.on_series_hovered)
+
+        x_index_list = np.percentile(range(len(self._category)), [0, 25, 50, 75, 100])
+        self._x_axis_list = [QGraphicsSimpleTextItem(self._category[int(index)], self._chart) for index in x_index_list]
+        [axis.setText(axis.text()[4:]) for axis in self._x_axis_list[1:]]
 
     def on_series_hovered(self, status, index):
         self.bar_hovered.emit(status, self._category[index])
@@ -270,6 +277,15 @@ class VLineChartView(QChartView):
         self._zero_point = self._chart.mapToPosition(QPointF(self._zero_value[0], self._zero_value[1]))
         self._max_point = self._chart.mapToPosition(QPointF(self._max_value[0], self._max_value[1]))
         self._cate_width = (self._max_point.x() - self._zero_point.x()) / len(self._category)
+        # 绘制自定义X轴
+        self._x_axis_list[0].setPos(self._zero_point.x() - self._cate_width, self._zero_point.y() + 10)
+        self._x_axis_list[1].setPos(self._max_point.x() * 0.25, self._zero_point.y() + 10)
+        self._x_axis_list[2].setPos(self._max_point.x() * 0.5, self._zero_point.y() + 10)
+        self._x_axis_list[3].setPos(self._max_point.x() * 0.75, self._zero_point.y() + 10)
+        self._x_axis_list[4].setPos(
+            self._max_point.x() - self._x_axis_list[-1].boundingRect().width(),
+            self._zero_point.y() + 10
+        )
 
     def max_point(self):
         return QPointF(self._max_point.x() + self._cate_width / 2, self._max_point.y())
@@ -301,7 +317,9 @@ class VLineChartView(QChartView):
 
         self.setChart(self._chart)
         self._chart.layout().setContentsMargins(0, 0, 0, 0)
-        # self._chart.setMargins(QMargins(0, 0, 0, 0))
+        # 设置内边界的bottom为0
+        # margins = self._chart.margins()
+        # self._chart.setMargins(QMargins(margins.left(), 0, margins.right(), 0))
         self._chart.setBackgroundRoundness(0)
 
 
@@ -383,7 +401,6 @@ class KVWidget(QWidget):
         # 事件过滤
         QApplication.instance().installEventFilter(self)
 
-        # TODO: 使用自绘的方式在横坐标下面写日期，并且只显示指定个数的时间, K线图隐藏横坐标轴，V线图显示横坐标轴即可
         # TODO: 在给定日期的K线图上绘制文字
         # TODO: 向左右拖动图表能显示之前或之后的图表，且坐标跟着变化
         # TODO: 能标准成本线，能计算指定两个点的涨幅度
@@ -486,4 +503,6 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     view = KVWidget()
     view.show()
+    # cx = CustomAxisX()
+    # cx.show()
     sys.exit(app.exec_())
