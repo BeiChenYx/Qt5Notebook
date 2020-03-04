@@ -231,6 +231,8 @@ class VLineChartView(QChartView):
         x_index_list = np.percentile(range(len(self._category)), [0, 25, 50, 75, 100])
         self._x_axis_list = [QGraphicsSimpleTextItem(self._category[int(index)], self._chart) for index in x_index_list]
         [axis.setText(axis.text()[4:]) for axis in self._x_axis_list[1:]]
+        self._v_b = QGraphicsSimpleTextItem('B', self._chart)
+        self._v_b.setZValue(100)
 
     def on_series_hovered(self, status, index):
         self.bar_hovered.emit(status, self._category[index])
@@ -286,6 +288,12 @@ class VLineChartView(QChartView):
             self._max_point.x() - self._x_axis_list[-1].boundingRect().width(),
             self._zero_point.y() + 10
         )
+        # 20180207 这个日期的柱形图上面画一个字母b
+        vol = self._stocks[self._stocks['trade_date'] == '20180207']['vol'] / self._vol_multiple
+        print('vol:', vol, ' trade_date:', '20180207')
+        pos = self._chart.mapToPosition(QPointF(list(self._category).index('20180207'), vol))
+        pos = QPointF(pos.x() - self._cate_width / 2, pos.y() - self._v_b.boundingRect().height())
+        self._v_b.setPos(pos)
 
     def max_point(self):
         return QPointF(self._max_point.x() + self._cate_width / 2, self._max_point.y())
@@ -401,7 +409,6 @@ class KVWidget(QWidget):
         # 事件过滤
         QApplication.instance().installEventFilter(self)
 
-        # TODO: 在给定日期的K线图上绘制文字
         # TODO: 向左右拖动图表能显示之前或之后的图表，且坐标跟着变化
         # TODO: 能标准成本线，能计算指定两个点的涨幅度
 
