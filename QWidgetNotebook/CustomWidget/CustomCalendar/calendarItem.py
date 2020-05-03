@@ -86,8 +86,6 @@ class CalendarItem(QtWidgets.QWidget):
             color = self.selectTextColor
         elif self.hover:
             color = self.hoverTextColor
-        else:
-            color = self.lunarColor
         font = QtGui.QFont()
         font.setPixelSize(int(side * 2 / 3))
         painter.setFont(font)

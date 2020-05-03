@@ -40,19 +40,6 @@ class CalendarWidget(QtWidgets.QWidget, Ui_calendarWidget):
         self.initCalendar()
 
     def initCalendar(self, date=None):
-        """ 初始化日历主体 """
-<<<<<<< HEAD:QWidgetNotebook/CustomWidget/CustomCalendar/calendarMain.py
-        # 清空布局内的控件
-        item = None;
-        while True:
-            item = self.layout_body.takeAt(0)
-            if item is None:
-                break
-            item.widget().hide()
-            self.layout_body.removeItem(item)
-            del item
-        self.layout_body.update()
-
         row = 0
         week_map = {0: 1, 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 0}
         now = self.now if date is None else date
@@ -125,7 +112,6 @@ class CalendarWidget(QtWidgets.QWidget, Ui_calendarWidget):
 
 
 def ui():
-    """ 显示UI界面，会阻塞线程，开启Qt事件循环 """
     app = QtWidgets.QApplication(sys.argv)
     ui = CalendarWidget()
     ui.show()
