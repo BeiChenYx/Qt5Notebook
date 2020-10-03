@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>711</width>
+    <height>435</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">/* 左导航栏 */
+#widget_left_nav{	
+	background-color: #ddedfa;
+}
+#widget_left_nav QToolButton{
+	color: #000000;
+	background-color: none;
+    border:none;
+    padding: 2px 2px 2px 2px;
+	min-height: 0px;
+    border-radius:0px;
+}
+#widget_left_nav QToolButton:checked{
+	color: #3096f8;
+}
+#widget_left_nav QToolButton:hover{
+	color: #ffffff;
+	background-color: #2e9eea;
+}
+
+/* 分割线 */
+#widget_left_nav #HLine{
+	background-color: #ddedfa;
+	border-top: 1px solid #a0a0a0; 
+}
+
+#CustomHorizontalHeaderView::section:horizontal{
+	border: none;
+	padding-left:5px;
+	padding-right:5px;
+	color: rgb(255, 255, 255);
+}
+
+#CustomHorizontalHeaderView::section:!last{
+	border-right: 1px solid rgb(230, 230, 230);
+}
+#CustomTableView{
+	alternate-background-color: rgb(242,242,242);
+	background-color: rgb(255,255,255);
+	selection-background-color: #0078D7;
+	selection-color: #FAFAFA;
+	gridline-color: rgb(230, 230, 230);
+	border-top: none;
+	border-right: 1px solid rgb(230, 230, 230);
+	border-left: 1px solid rgb(230, 230, 230);
+	border-bottom: 1px solid rgb(230, 230, 230);
+}
+#CustomHeaderView #widget_header{
+	background-color:qlineargradient(x1:0,y1:1,x2:0,y2:0,stop:0 rgba(17,127,225, 1),stop:1 rgba(48,150,248, 0.5));;
+	border-right: 1px solid rgb(230, 230, 230);
+}
+#CustomHeaderView #widget_header QLabel{
+	color: rgb(255, 255, 255);
+}
+#CustomHeaderView #widget_header QToolButton{
+	background-color:none;
+  	border:none;
+}
+#CustomHeaderView #widget_header QToolButton:hover{
+	background-color: #2e9eea;
+}
+#CustomHeaderView #widget_header QToolButton:pressed{
+	background-color:palette(highlight);
+}
+#CustomHeaderView #widget_header QToolButton:checked{
+	background-color: #C2C2C2;
+}
+#CustomHeaderView QToolButton{
+    min-height: 0px;
+    border-radius:0px;
+    padding:0px;
+    background-color: transparent;
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QSplitter" name="splitter">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QWidget" name="widget_left_nav" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>150</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="toolTipDuration">
+        <number>-1</number>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <layout class="QVBoxLayout" name="verticalLayout_left_nav"/>
+        </item>
+        <item row="1" column="0">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>247</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QStackedWidget" name="stackedWidget"/>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

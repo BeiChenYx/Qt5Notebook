@@ -1,0 +1,47 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/1_1.gif</file>
+        <file>images/1-0.png</file>
+        <file>images/cechuang-AA.png</file>
+        <file>images/cechuang-BB.png</file>
+        <file>images/cechuang-CC.png</file>
+        <file>images/cechuang-DD.png</file>
+        <file>images/cechuang-EE.png</file>
+        <file>images/Checked.png</file>
+        <file>images/fan.gif</file>
+        <file>images/fan1.png</file>
+        <file>images/FB-A.png</file>
+        <file>images/FB-B.png</file>
+        <file>images/FB-C.png</file>
+        <file>images/FB-D.png</file>
+        <file>images/FB-E.png</file>
+        <file>images/feng_liang.png</file>
+        <file>images/heater.png</file>
+        <file>images/hot.gif</file>
+        <file>images/hot1.png</file>
+        <file>images/light.png</file>
+        <file>images/logIn.jpg</file>
+        <file>images/logOut.jpg</file>
+        <file>images/OFF.png</file>
+        <file>images/ON.png</file>
+        <file>images/pai_feng_ji.png</file>
+        <file>images/pai_shui_jia_re.png</file>
+        <file>images/pang_tong_fa.png</file>
+        <file>images/re_shui_fa.png</file>
+        <file>images/shi_jian.png</file>
+        <file>images/song_feng_ji.png</file>
+        <file>images/T.png</file>
+        <file>images/Uncheck.png</file>
+        <file>images/W.png</file>
+        <file>images/wet.gif</file>
+        <file>images/wet1.png</file>
+        <file>images/wet2.png</file>
+        <file>images/xiao_lv.png</file>
+        <file>images/xin_feng_liang.png</file>
+        <file>images/xin_feng_lv_wang.png</file>
+        <file>images/SF.ico</file>
+        <file>images/title.png</file>
+        <file>images/down.png</file>
+        <file>images/up.png</file>
+    </qresource>
+</RCC>

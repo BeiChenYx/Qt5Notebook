@@ -1,0 +1,20 @@
+<RCC>
+  <qresource prefix="img">
+    <file>images/加.png</file>
+    <file>images/减号.png</file>
+    <file>images/帮助.png</file>
+    <file>images/check_box.png</file>
+    <file>images/check_box_disabled.png</file>
+    <file>images/checked_box.png</file>
+    <file>images/ico.png</file>
+    <file>images/滚动条箭头down.png</file>
+    <file>images/滚动条箭头downhover.png</file>
+    <file>images/滚动条箭头up.png</file>
+    <file>images/滚动条箭头uphover.png</file>
+    <file>images/ico.png</file>
+    <file>images/checked_box.png</file>
+    <file>images/TCP服务器.png</file>
+    <file>images/TCP客户端.png</file>
+    <file>images/UDP工具.png</file>
+  </qresource>
+</RCC>

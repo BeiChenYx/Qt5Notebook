@@ -24,10 +24,10 @@ int main(int argc, char *argv[])
     QTextCodec *codec = QTextCodec::codecForName("utf-8");
     QTextCodec::setCodecForLocale(codec);
 #endif
-#if 0
+#if 1
     QTabWidget w;
     w.addTab(new frmNavListView, "树状导航控件");
-    w.addTab(new frmNavListViewForm, "树状导航界面");
+//    w.addTab(new frmNavListViewForm, "树状导航界面");
     w.setWindowTitle("树状导航示例");
     w.resize(800, 600);
     w.show();
