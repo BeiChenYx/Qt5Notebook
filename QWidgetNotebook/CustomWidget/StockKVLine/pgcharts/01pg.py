@@ -47,7 +47,7 @@ def pg_window_addplot_mul():
     plot3.plot(y)
     pg.QtGui.QGuiApplication.exec_()
 
-# pg_window_addplot_mul()
+pg_window_addplot_mul()
 
 def pg_graphicsLayou_plot():
     """
@@ -96,7 +96,7 @@ def pg_plotitem_plot():
     xx.show()
     app.exec_()
 
-pg_plotitem_plot()
+# pg_plotitem_plot()
 
 
     
