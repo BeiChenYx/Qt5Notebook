@@ -4,17 +4,17 @@ import sys
 import pyqtgraph as pg
 import numpy as np
 import pandas as pd
-from PyQt5.QtCore import QPointF, QDateTime, QRectF
+from PyQt5.QtCore import QPointF, QDateTime, QRectF, Qt
 from PyQt5.QtGui import QPainter, QPen, QColor, QMouseEvent, QFont, QPicture
-from PyQt5.QtWidgets import (QApplication, QGraphicsLineItem, QWidget,
+from PyQt5.QtWidgets import (QApplication, QGraphicsItem, QWidget, QGraphicsRectItem,
         QLabel, QHBoxLayout, QVBoxLayout, QGridLayout,
         QGraphicsProxyWidget, QSplitter, QPushButton)
 
 
-class CandlestickItem(pg.GraphicsObject):
+class VolItem(pg.GraphicsObject):
     """ 自定义Item """
     def __init__(self, data: pd.DataFrame):
-        super(CandlestickItem, self).__init__()
+        super(VolItem, self).__init__()
         self._data = data
         self._pic = QPicture()
         self.generatePicture()
@@ -28,18 +28,16 @@ class CandlestickItem(pg.GraphicsObject):
         w = 1/3
         for row in self._data.itertuples():
             _t = getattr(row, 'Index')
-            h_price = getattr(row, 'high')
-            l_price = getattr(row, 'low')
+            vol = getattr(row, 'vol') / 10000
             o_price = getattr(row, 'open')
             c_price = getattr(row, 'close')
-            p.drawLine(QPointF(_t, l_price), QPointF(_t, h_price))
             
             if o_price > c_price:
                 p.setBrush(pg.mkBrush('g'))
             else:
                 p.setBrush(pg.mkBrush('r'))
 
-            p.drawRect(QRectF(_t - w, o_price, w * 2, c_price - o_price))
+            p.drawRect(QRectF(_t - w, 0, w * 2, vol))
         
         p.end()
 
@@ -48,6 +46,21 @@ class CandlestickItem(pg.GraphicsObject):
 
     def boundingRect(self):
         return QRectF(self._pic.boundingRect())
+
+"""
+    def itemChange(self, change, value):
+        if change == QGraphicsItem.ItemPositionChange and self.scene():
+            newPos = value.toPointF();
+            rect = QRectF(0, self.pos().y(), self.scene().width(), 0); # 水平移动
+            # rect = QRectF(0, 0, 0, self.scene().height()); # 垂直移动
+            # QRectF rect(0, this->pos().x(), scene()->width(), 0); # 向右下方移动
+            # QRectF rect(0, -this->pos().x(), scene()->width(), 0); # 向右上方移动
+            if not rect.contains(newPos):
+                newPos.setX(min(rect.right(), max(newPos.x(), rect.left())));
+                newPos.setY(min(rect.bottom(), max(newPos.y(), rect.top())));
+                return newPos;
+        return QGraphicsRectItem.itemChange(self, change, value);
+"""
         
 
 class KWidget(QWidget):
@@ -93,12 +106,8 @@ class KWidget(QWidget):
         axis_date.setTicks([self._axis_date])
         self._pw.setAxisItems({'bottom': axis_date})
 
-        self._k_item = CandlestickItem(self._data) 
+        self._k_item = VolItem(self._data) 
         self._pw.addItem(self._k_item)
-
-        # 添加第二个图形
-        self._pw.plot(x=list(self._xdict.keys()), y=self._data['close'].values, 
-                pen='r', name='close')
 
         self._label_info = pg.TextItem()
         self._pw.addItem(self._label_info)
@@ -115,11 +124,15 @@ class KWidget(QWidget):
         _tmp_data = self._data.iloc[-120:]
         _x_left = _tmp_data.index[0]
         _x_right = _tmp_data.index[-1]
-        _y_max = _tmp_data['high'].max()
-        _y_min = _tmp_data['low'].min()
+        _y_max = self._data['vol'].max() / 10000
         top_left = QPointF(_x_left * 0.99, _y_max * 1.01)
-        bottom_right = QPointF(_x_right * 1.01, _y_min * 0.99)
+        bottom_right = QPointF(_x_right * 1.01, 0)
+        # 设置可视范围
         self._view_box.setRange(rect=QRectF(top_left, bottom_right))
+        # 设置y轴可视范围，调整padding
+        self._view_box.setYRange(0, _y_max * 1.01, padding=0)
+        # 设置鼠标禁用状态
+        self._view_box.setMouseEnabled(x=True, y=False)
 
         # self._proxy 代理必须存在，不能用局部变量
         self._proxy = pg.SignalProxy(self._pw.scene().sigMouseMoved, rateLimit=30, slot=self.mouse_moved)
