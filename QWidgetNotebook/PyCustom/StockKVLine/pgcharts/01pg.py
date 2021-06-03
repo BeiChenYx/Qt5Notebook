@@ -5,6 +5,7 @@ import numpy as np
 x = np.random.random(50)
 y = np.random.random(8)
 
+
 def pg_plot():
     """ 最简单的使用plot()方法直接绘制图形 """
     app = pg.QtGui.QApplication([])
@@ -26,6 +27,7 @@ def pg_window_addplot():
     pg.QtGui.QGuiApplication.exec_()
 
 # pg_window_addplot()
+
 
 def pg_window_addplot_mul():
     """
@@ -49,6 +51,7 @@ def pg_window_addplot_mul():
 
 pg_window_addplot_mul()
 
+
 def pg_graphicsLayou_plot():
     """
     通过GraphicsLayout图形层方法绘制图形的过程相较于上面的稍微复杂:
@@ -60,13 +63,14 @@ def pg_graphicsLayou_plot():
     app = pg.QtGui.QApplication([])
     view = pg.GraphicsView()
     layout = pg.GraphicsLayout()
-    view.setCentralItem(layout )
+    view.setCentralItem(layout)
     view.show()
     p1 = layout.addPlot(title='yangxing的PyQt笔记')
     p1.plot(x)
     app.exec_()
 
 # pg_graphicsLayou_plot()
+
 
 def pg_plotwidget_plot():
     """
@@ -77,8 +81,8 @@ def pg_plotwidget_plot():
     app = pg.QtGui.QApplication([])
     pw = pg.PlotWidget(title='yangxing的PyQt笔记')
     print(type(pw.getPlotItem().getAxis('bottom')))
-    b_axis =pw.getPlotItem().getAxis('left')
-    b_axis.setGrid(200);
+    b_axis = pw.getPlotItem().getAxis('left')
+    b_axis.setGrid(200)
     b_axis.setLogMode(True)
     b_axis.setWidth(100)
     pw.plot(x)
@@ -86,6 +90,7 @@ def pg_plotwidget_plot():
     app.exec_()
 
 # pg_plotwidget_plot()
+
 
 def pg_plotitem_plot():
     app = pg.QtGui.QApplication([])
@@ -97,13 +102,3 @@ def pg_plotitem_plot():
     app.exec_()
 
 # pg_plotitem_plot()
-
-
-    
-
-
-
-
-
-
-

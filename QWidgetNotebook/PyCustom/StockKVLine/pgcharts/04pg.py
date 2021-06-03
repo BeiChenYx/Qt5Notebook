@@ -1,3 +1,6 @@
+"""
+成交量绘制
+"""
 import pdb
 import sys
 
@@ -22,7 +25,7 @@ class VolItem(pg.GraphicsObject):
     def generatePicture(self):
         """ 绘图 """
         p = QPainter(self._pic)
-        p.setPen(pg.mkPen('w'))
+        p.setPen(pg.mkPen({'color': "CCCCCC"}))
         # 两个坐标点的1/3, 两个点的距离为横坐标的差
         # 如果使用时间来，会出现间隔不连续，因为股票数据时间本身是不连续的
         w = 1/3
