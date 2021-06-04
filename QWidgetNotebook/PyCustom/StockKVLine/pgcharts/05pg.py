@@ -145,16 +145,18 @@ class KWidget(QWidget):
         print('KWidget rect: ', _rect)
 
     def on_y_range_changed(self, obj, start_end):
-        _padding = self._view_box.suggestPadding(0)
-        self.sig_y_padding_changed.emit(_padding)
+        # _padding = self._view_box.suggestPadding(0)
+        # self.sig_y_padding_changed.emit(_padding)
+        pass
 
     def on_y_padding_changed(self, padding):
         """ y轴的padding发生改变 """
-        _padding = self._view_box.suggestPadding(0)
-        if padding > _padding:
-            self._view_box.setYRange(self._y_min, self._y_max, padding=_padding)
-            print('KWidget _padding: ', _padding, '  padding: ', padding)
-            self._view_box.updateViewRange()
+        # _padding = self._view_box.suggestPadding(0)
+        # if padding > _padding:
+            # self._view_box.setYRange(self._y_min, self._y_max, padding=_padding)
+            # print('KWidget _padding: ', _padding, '  padding: ', padding)
+            # self._view_box.updateViewRange()
+        pass
 
     def view_box(self):
         """ 返回视图 """
@@ -165,6 +167,9 @@ class KWidget(QWidget):
         axis_date = pg.AxisItem(orientation='bottom')
         axis_date.setTicks([self._axis_date])
         self._pw.setAxisItems({'bottom': axis_date})
+        self._pw.showAxis('left', True)
+        self._pw.showAxis('right', True)
+        self._pw.showAxis('bottom', False)
 
         self._k_item = CandlestickItem(self._data) 
         self._pw.addItem(self._k_item)
@@ -305,16 +310,18 @@ class VolWidget(QWidget):
         print('VolWidget rect: ', _rect)
 
     def on_y_range_changed(self, obj, start_end):
-        _padding = self._view_box.suggestPadding(0)
-        self.sig_y_padding_changed.emit(_padding)
+        # _padding = self._view_box.suggestPadding(0)
+        # self.sig_y_padding_changed.emit(_padding)
+        pass
 
     def on_y_padding_changed(self, padding):
         """ y轴的padding发生改变 """
-        _padding = self._view_box.suggestPadding(0)
-        if padding > _padding:
-            self._view_box.setYRange(self._y_min, self._y_max, padding=_padding)
-            self._view_box.updateViewRange()
-            print('VolWidget _padding: ', _padding, '  padding: ', padding)
+        # _padding = self._view_box.suggestPadding(0)
+        # if padding > _padding:
+            # self._view_box.setYRange(self._y_min, self._y_max, padding=_padding)
+            # self._view_box.updateViewRange()
+            # print('VolWidget _padding: ', _padding, '  padding: ', padding)
+        pass
 
     def view_box(self):
         """ 返回视图 """
@@ -325,6 +332,9 @@ class VolWidget(QWidget):
         axis_date = pg.AxisItem(orientation='bottom')
         axis_date.setTicks([self._axis_date])
         self._pw.setAxisItems({'bottom': axis_date})
+        self._pw.showAxis('left', True)
+        self._pw.showAxis('right', True)
+        # TODO: 使用AxisItem::setStyle()来更改tickTextWidth
 
         self._k_item = VolItem(self._data) 
         self._pw.addItem(self._k_item)
@@ -351,7 +361,7 @@ class VolWidget(QWidget):
         # 设置可视范围
         self._view_box.setRange(rect=QRectF(top_left, bottom_right))
         # 设置y轴可视范围，调整padding
-        self._view_box.setYRange(self._y_min, self._y_max, padding=0)
+        self._view_box.setYRange(self._y_min, self._y_max, padding=0.1)
         # 设置鼠标禁用状态
         self._view_box.setMouseEnabled(x=True, y=False)
         # self._view_box.enableAutoRange(axis=self._view_box.YAxis, enable=True)
@@ -394,7 +404,7 @@ class MainWidget(QWidget):
         self._spliter.setHandleWidth(1)
         _layout = QHBoxLayout()
         _layout.addWidget(self._spliter)
-        _layout.setContentsMargins(0, 0, 0, 0)
+        _layout.setContentsMargins(10, 10, 10, 10)
         _layout.setSpacing(0)
         self.setLayout(_layout)
 
