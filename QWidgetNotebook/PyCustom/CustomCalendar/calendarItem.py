@@ -13,7 +13,16 @@ class DayType(Enum):
 
 class CalendarItem(QtWidgets.QWidget):
 
-    def __init__(self, day: int = 1, week_end=False, parent=None):
+    def __init__(self, day: int = 1,
+                 week_end=False,
+                 is_now=False,
+                 is_trade=True,
+                 parent=None):
+        """
+        :day: 日期
+        :week_end: 是否是周末
+        :selected: 是否被选中
+        """
         super(CalendarItem, self).__init__(parent)
         self.day = str(day)
         self.week_end = week_end
@@ -24,16 +33,17 @@ class CalendarItem(QtWidgets.QWidget):
         self.otherTextColor = QtGui.QColor(200, 200, 200)
         self.currentBgColor = QtGui.QColor(255, 255, 255)
         self.otherBgColor = QtGui.QColor(240, 240, 240)
-        self.selectBgColor = QtGui.QColor(208,47,18)
+        self.selectBgColor = QtGui.QColor(194, 194, 194)
         self.hoverBgColor = QtGui.QColor(204, 183, 180)
+        self.nowBgColor = QtGui.QColor(194, 194, 194)
+        self.tradeBgColor = QtGui.QColor(255, 0, 0)
+        self.notradeBgColor = QtGui.QColor(194, 194, 194)
         self.dayType = DayType.MONTH_CURRENT
         self.hover = False
         self.pressed = False
         self.select = False
-        self.nowDate = QtCore.QDate.currentDate()
-
-    def setDate(self, date: QtCore.QDate):
-        self.nowDate = date
+        self.is_now = is_now
+        self.is_trade = is_trade
 
     def enterEvent(self, event):
         self.hover = True
@@ -60,11 +70,14 @@ class CalendarItem(QtWidgets.QWidget):
         self.drawBg(painter)
         if self.select:
             self.drawBgCurrent(painter, self.selectBgColor)
+        elif self.is_now:
+            self.drawBgCurrent(painter, self.nowBgColor)
         elif self.hover:
             self.drawBgCurrent(painter, self.hoverBgColor)
         else:
             self.drawBgCurrent(painter, self.currentBgColor)
         self.drawDay(painter)
+        self.draw_trade(painter)
 
     def drawBg(self, painter: QtGui.QPainter):
         painter.save()
@@ -81,7 +94,7 @@ class CalendarItem(QtWidgets.QWidget):
         painter.save()
         width = self.width()
         height = self.height()
-        side = width if width < height else height
+        side = min(width, height)
         if self.select:
             color = self.selectTextColor
         elif self.hover:
@@ -93,6 +106,13 @@ class CalendarItem(QtWidgets.QWidget):
             painter.setPen(QtGui.QColor(255, 0, 0))
         rect = QtCore.QRect(0, 0, width, height)
         painter.drawText(rect, QtCore.Qt.AlignCenter, self.day)
+        painter.restore()
+
+    def draw_trade(self, painter: QtGui.QPainter):
+        painter.save()
+        width = self.width()
+        painter.setBrush(self.tradeBgColor if self.is_trade else self.notradeBgColor)
+        painter.drawEllipse(width - 12, 2, 10, 10)
         painter.restore()
 
     def drawBgCurrent(self, painter: QtGui.QPainter, color: QtGui.QColor):

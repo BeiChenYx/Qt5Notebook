@@ -48,9 +48,17 @@ class CalendarWidget(QtWidgets.QWidget, Ui_calendarWidget):
         for i, week in week_day:
             col = week_map[week]
             week_end = True if col == 6 or col == 0 else False
-            item = CalendarItem(i, week_end)
+            is_selected = True if (date is None) and (now.day() == i) else False
+            item = CalendarItem(i, week_end, is_selected, is_selected)
             self.layout_body.addWidget(item, row, col)
             row = (row + 1) if col == 6 else row
+
+    def clearCalendar(self):
+        layout_item = self.layout_body.takeAt(0)
+        while layout_item is not None:
+            layout_item.widget().setParent(None)
+            del layout_item;
+            layout_item = self.layout_body.takeAt(0)
 
     def initConnections(self):
         self.toolButton_py.clicked.connect(self.onToolButton_py)
@@ -58,13 +66,13 @@ class CalendarWidget(QtWidgets.QWidget, Ui_calendarWidget):
         self.toolButton_pm.clicked.connect(self.onToolButton_pm)
         self.toolButton_nm.clicked.connect(self.onToolButton_nm)
         self.pushButton_now.clicked.connect(self.onPushButton_now)
-        self.dateEdit_y.dateChanged.connect(self.onDateChanged_y)
-        self.dateEdit_m.dateChanged.connect(self.onDateChanged_m)
 
     def onToolButton_py(self):
         now = self.dateEdit_y.date().addYears(-1)
         self.dateEdit_y.setDate(now)
-        self.initCalendar(now)
+        self.clearCalendar()
+        date = None if now == self.now else now
+        self.initCalendar(date)
         self.dateEdit_y.update()
         self.dateEdit_m.update()
         self.widget_calendar.update()
@@ -72,7 +80,9 @@ class CalendarWidget(QtWidgets.QWidget, Ui_calendarWidget):
     def onToolButton_ny(self):
         now = self.dateEdit_y.date().addYears(1)
         self.dateEdit_y.setDate(now)
-        self.initCalendar(now)
+        self.clearCalendar()
+        date = None if now == self.now else now
+        self.initCalendar(date)
         self.dateEdit_y.update()
         self.dateEdit_m.update()
         self.widget_calendar.update()
@@ -82,7 +92,10 @@ class CalendarWidget(QtWidgets.QWidget, Ui_calendarWidget):
         if now.month() == 1:
             self.onToolButton_py()
         self.dateEdit_m.setDate(now.addMonths(-1))
-        self.initCalendar(now.addMonths(-1))
+        self.clearCalendar()
+        now = now.addMonths(-1)
+        date = None if now == self.now else now
+        self.initCalendar(date)
         self.dateEdit_m.update()
         self.dateEdit_y.update()
         self.widget_calendar.update()
@@ -92,7 +105,10 @@ class CalendarWidget(QtWidgets.QWidget, Ui_calendarWidget):
         if now.month() == 12:
             self.onToolButton_ny()
         self.dateEdit_m.setDate(now.addMonths(1))
-        self.initCalendar(now.addMonths(1))
+        self.clearCalendar()
+        now = now.addMonths(1)
+        date = None if now == self.now else now
+        self.initCalendar(date)
         self.dateEdit_m.update()
         self.dateEdit_y.update()
         self.widget_calendar.update()
@@ -100,15 +116,11 @@ class CalendarWidget(QtWidgets.QWidget, Ui_calendarWidget):
     def onPushButton_now(self):
         self.dateEdit_y.setDate(self.now)
         self.dateEdit_m.setDate(self.now)
-        self.initCalendar(self.now)
+        self.clearCalendar()
+        self.initCalendar(None)
         self.dateEdit_m.update()
         self.dateEdit_y.update()
         self.widget_calendar.update()
-
-    def onDateChanged_y(self, date):
-        pass
-    def onDateChanged_m(self, date):
-        pass
 
 
 def ui():
